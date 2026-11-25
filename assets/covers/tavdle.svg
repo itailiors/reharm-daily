@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 270" width="480" height="270" fill="none" role="img" aria-label="TAVDLE cover art placeholder">
+  <rect width="480" height="270" fill="#EFE5CA"/>
+  <!-- Blueprint grid margin -->
+  <rect x="14" y="14" width="452" height="242" rx="10" fill="#F6E9C9" stroke="#1E2A78" stroke-opacity="0.4" stroke-width="1.6" stroke-dasharray="6 5"/>
+  <!-- Faint pencil 5-line musical staff -->
+  <g stroke="#1E2A78" stroke-opacity="0.28" stroke-width="1.4" stroke-dasharray="5 4">
+    <path d="M44 96H436"/><path d="M44 114H436"/><path d="M44 132H436"/><path d="M44 150H436"/><path d="M44 168H436"/>
+  </g>
+  <!-- Placeholder floating noteheads with question marks -->
+  <g>
+    <ellipse cx="122" cy="150" rx="14" ry="10" transform="rotate(-14 122 150)" fill="#5B85C2" fill-opacity="0.28" stroke="#1E2A78" stroke-width="2"/>
+    <path d="M135 147V88" stroke="#1E2A78" stroke-width="2.2" stroke-linecap="round"/>
+
+    <ellipse cx="204" cy="132" rx="14" ry="10" transform="rotate(-14 204 132)" fill="#E3B23C" fill-opacity="0.35" stroke="#1E2A78" stroke-width="2"/>
+    <path d="M217 129V74" stroke="#1E2A78" stroke-width="2.2" stroke-linecap="round"/>
+
+    <ellipse cx="286" cy="114" rx="14" ry="10" transform="rotate(-14 286 114)" fill="#7E9C6B" fill-opacity="0.32" stroke="#1E2A78" stroke-width="2"/>
+    <path d="M299 111V62" stroke="#1E2A78" stroke-width="2.2" stroke-linecap="round"/>
+
+    <!-- Mystery note with red-pen ? -->
+    <circle cx="368" cy="132" r="22" fill="#FBF3DF" stroke="#A52213" stroke-width="2.2" stroke-dasharray="4 3"/>
+    <text x="368" y="142" text-anchor="middle" fill="#A52213" font-family="'Kalam', cursive" font-size="28" font-weight="700">?</text>
+  </g>
+  <!-- Beam connecting first 3 notes -->
+  <path d="M135 88L299 62" stroke="#1E2A78" stroke-width="4" stroke-linecap="round"/>
+  <!-- Corner drafting label -->
+  <text x="36" y="44" fill="#2F3C8A" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="600">SKETCHBOOK · SPEC TBD</text>
+</svg>

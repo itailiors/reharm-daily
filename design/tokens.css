@@ -1,0 +1,347 @@
+/* ============================================================================
+   Reharm Daily — Production Design Tokens (CSS Custom Properties)
+   Direction: "The Daily Sheet" (Ink & Parchment Light / Northgate Night Sheet)
+   Source of truth synchronized with design/tokens.json
+   ============================================================================ */
+
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+
+  /* Surfaces (Ink & Parchment Daily Sheet) */
+  --bg-canvas: #F6E9C9;
+  --bg-surface: #FBF3DF;
+  --bg-elevated: #EFE2C1;
+  --bg-well: #EAD7AA;
+  --bg-hover: #E5CFA0;
+  --bg-backdrop: rgba(30, 42, 120, 0.42);
+
+  /* Borders, Ink Rules & Paper Textures */
+  --border-ink: #1E2A78;
+  --border-subtle: #C9B996;
+  --border-strong: #877B62;
+  --paper-rule: rgba(30, 42, 120, 0.16);
+  --card-lip: rgba(30, 42, 120, 0.14);
+
+  /* Typography Ink */
+  --text-primary: #1E2A78;
+  --text-secondary: #2F3C8A;
+  --text-muted: #45508C;
+
+  /* Primary & Editorial Accents */
+  --accent-primary: #1E2A78;
+  --accent-primary-hover: #16205E;
+  --accent-primary-soft: rgba(30, 42, 120, 0.10);
+  --accent-primary-solid-bg: #1E2A78;
+  --accent-primary-solid-ink: #FBF3DF;
+
+  /* Teacher's Red Pen & Brass Highlights */
+  --accent-pen: #A52213;
+  --accent-pen-bg: rgba(179, 40, 24, 0.10);
+  --accent-pen-border: rgba(179, 40, 24, 0.42);
+  --accent-brass: #7A4B06;
+  --accent-brass-bg: rgba(227, 178, 60, 0.22);
+  --accent-brass-border: rgba(122, 75, 6, 0.38);
+
+  /* Watercolour Washes (Decorative / Background Accents Only) */
+  --wash-blue: #5B85C2;
+  --wash-mustard: #E3B23C;
+  --wash-brick: #B9532F;
+  --wash-sage: #7E9C6B;
+  --wash-blend: multiply;
+
+  /* Semantic Statuses (Always Dual-Coded with Icon/Shape + Label) */
+  --status-done-fg: #2D5629;
+  --status-done-bg: rgba(126, 156, 107, 0.20);
+  --status-done-border: rgba(45, 86, 41, 0.42);
+
+  --status-progress-fg: #7A4404;
+  --status-progress-bg: rgba(227, 178, 60, 0.24);
+  --status-progress-border: rgba(122, 68, 4, 0.42);
+
+  --status-new-fg: #1E2A78;
+  --status-new-bg: rgba(91, 133, 194, 0.16);
+  --status-new-border: rgba(30, 42, 120, 0.36);
+
+  --status-soon-fg: #444E82;
+  --status-soon-bg: rgba(30, 42, 120, 0.08);
+  --status-soon-border: rgba(68, 78, 130, 0.32);
+
+  --status-muted-ok-fg: #155852;
+  --status-muted-ok-bg: rgba(21, 88, 82, 0.10);
+
+  --status-audio-fg: #8C3316;
+  --status-audio-bg: rgba(185, 83, 47, 0.13);
+
+  --status-warn-fg: #7A3E04;
+  --status-warn-bg: #F5E0A8;
+  --status-warn-border: #B87918;
+
+  /* Focus Ring */
+  --focus-ring: #1E2A78;
+  --focus-gap: #FBF3DF;
+
+  /* Paper Texture & Shadows */
+  --page-texture: var(--texture-paper);
+  --shadow-card: 0 2px 0 var(--card-lip), 0 6px 18px rgba(30, 42, 120, 0.07);
+  --shadow-card-hover: 0 4px 0 var(--card-lip), 0 10px 24px rgba(30, 42, 120, 0.12);
+  --shadow-well: inset 0 1px 3px rgba(30, 42, 120, 0.10);
+  --shadow-sheet: 0 -8px 32px rgba(30, 42, 120, 0.18);
+  --shadow-modal: 0 16px 44px rgba(30, 42, 120, 0.22);
+}
+
+/* Automatic Dark Theme via OS Preference (when not pinned to light) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --bg-canvas: #1C1916;
+    --bg-surface: #25211D;
+    --bg-elevated: #312B25;
+    --bg-well: #151210;
+    --bg-hover: #3B342D;
+    --bg-backdrop: rgba(12, 10, 8, 0.78);
+
+    --border-ink: #8C7D6B;
+    --border-subtle: #3B342C;
+    --border-strong: #877968;
+    --paper-rule: rgba(232, 220, 196, 0.14);
+    --card-lip: rgba(0, 0, 0, 0.42);
+
+    --text-primary: #E8DCC4;
+    --text-secondary: #C7B99E;
+    --text-muted: #A49781;
+
+    --accent-primary: #DFB15B;
+    --accent-primary-hover: #E9C174;
+    --accent-primary-soft: rgba(223, 177, 91, 0.14);
+    --accent-primary-solid-bg: #DFB15B;
+    --accent-primary-solid-ink: #181410;
+
+    --accent-pen: #F58979;
+    --accent-pen-bg: rgba(224, 96, 79, 0.14);
+    --accent-pen-border: rgba(245, 137, 121, 0.45);
+    --accent-brass: #DFB15B;
+    --accent-brass-bg: rgba(210, 162, 78, 0.16);
+    --accent-brass-border: rgba(223, 177, 91, 0.42);
+
+    --wash-blue: #7F9AC0;
+    --wash-mustard: #D2A24E;
+    --wash-brick: #CF7040;
+    --wash-sage: #8E9A62;
+    --wash-blend: screen;
+
+    --status-done-fg: #A8C980;
+    --status-done-bg: rgba(142, 154, 98, 0.18);
+    --status-done-border: rgba(168, 201, 128, 0.45);
+
+    --status-progress-fg: #E8BC66;
+    --status-progress-bg: rgba(210, 162, 78, 0.18);
+    --status-progress-border: rgba(232, 188, 102, 0.45);
+
+    --status-new-fg: #99B9E6;
+    --status-new-bg: rgba(127, 154, 192, 0.18);
+    --status-new-border: rgba(153, 185, 230, 0.45);
+
+    --status-soon-fg: #B5A892;
+    --status-soon-bg: rgba(232, 220, 196, 0.08);
+    --status-soon-border: rgba(181, 168, 146, 0.30);
+
+    --status-muted-ok-fg: #7DD0C5;
+    --status-muted-ok-bg: rgba(125, 208, 197, 0.14);
+
+    --status-audio-fg: #F29478;
+    --status-audio-bg: rgba(207, 112, 64, 0.16);
+
+    --status-warn-fg: #F2C97D;
+    --status-warn-bg: #362A19;
+    --status-warn-border: #C99438;
+
+    --focus-ring: #DFB15B;
+    --focus-gap: #25211D;
+
+    --page-texture: var(--texture-brush);
+    --shadow-card: 0 2px 0 var(--card-lip), 0 8px 22px rgba(0, 0, 0, 0.36);
+    --shadow-card-hover: 0 4px 0 var(--card-lip), 0 12px 28px rgba(0, 0, 0, 0.48);
+    --shadow-well: inset 0 2px 5px rgba(0, 0, 0, 0.45);
+    --shadow-sheet: 0 -10px 36px rgba(0, 0, 0, 0.62);
+    --shadow-modal: 0 18px 48px rgba(0, 0, 0, 0.65);
+  }
+}
+
+/* Explicit Dark Theme — "Northgate Night Sheet" */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-canvas: #1C1916;
+  --bg-surface: #25211D;
+  --bg-elevated: #312B25;
+  --bg-well: #151210;
+  --bg-hover: #3B342D;
+  --bg-backdrop: rgba(12, 10, 8, 0.78);
+
+  --border-ink: #8C7D6B;
+  --border-subtle: #3B342C;
+  --border-strong: #877968;
+  --paper-rule: rgba(232, 220, 196, 0.14);
+  --card-lip: rgba(0, 0, 0, 0.42);
+
+  --text-primary: #E8DCC4;
+  --text-secondary: #C7B99E;
+  --text-muted: #A49781;
+
+  --accent-primary: #DFB15B;
+  --accent-primary-hover: #E9C174;
+  --accent-primary-soft: rgba(223, 177, 91, 0.14);
+  --accent-primary-solid-bg: #DFB15B;
+  --accent-primary-solid-ink: #181410;
+
+  --accent-pen: #F58979;
+  --accent-pen-bg: rgba(224, 96, 79, 0.14);
+  --accent-pen-border: rgba(245, 137, 121, 0.45);
+  --accent-brass: #DFB15B;
+  --accent-brass-bg: rgba(210, 162, 78, 0.16);
+  --accent-brass-border: rgba(223, 177, 91, 0.42);
+
+  --wash-blue: #7F9AC0;
+  --wash-mustard: #D2A24E;
+  --wash-brick: #CF7040;
+  --wash-sage: #8E9A62;
+  --wash-blend: screen;
+
+  --status-done-fg: #A8C980;
+  --status-done-bg: rgba(142, 154, 98, 0.18);
+  --status-done-border: rgba(168, 201, 128, 0.45);
+
+  --status-progress-fg: #E8BC66;
+  --status-progress-bg: rgba(210, 162, 78, 0.18);
+  --status-progress-border: rgba(232, 188, 102, 0.45);
+
+  --status-new-fg: #99B9E6;
+  --status-new-bg: rgba(127, 154, 192, 0.18);
+  --status-new-border: rgba(153, 185, 230, 0.45);
+
+  --status-soon-fg: #B5A892;
+  --status-soon-bg: rgba(232, 220, 196, 0.08);
+  --status-soon-border: rgba(181, 168, 146, 0.30);
+
+  --status-muted-ok-fg: #7DD0C5;
+  --status-muted-ok-bg: rgba(125, 208, 197, 0.14);
+
+  --status-audio-fg: #F29478;
+  --status-audio-bg: rgba(207, 112, 64, 0.16);
+
+  --status-warn-fg: #F2C97D;
+  --status-warn-bg: #362A19;
+  --status-warn-border: #C99438;
+
+  --focus-ring: #DFB15B;
+  --focus-gap: #25211D;
+
+  --page-texture: var(--texture-brush);
+  --shadow-card: 0 2px 0 var(--card-lip), 0 8px 22px rgba(0, 0, 0, 0.36);
+  --shadow-card-hover: 0 4px 0 var(--card-lip), 0 12px 28px rgba(0, 0, 0, 0.48);
+  --shadow-well: inset 0 2px 5px rgba(0, 0, 0, 0.45);
+  --shadow-sheet: 0 -10px 36px rgba(0, 0, 0, 0.62);
+  --shadow-modal: 0 18px 48px rgba(0, 0, 0, 0.65);
+}
+
+/* ============================================================================
+   Theme-Invariant Foundations: Textures, Typography, Spacing, Radii, Motion
+   ============================================================================ */
+:root {
+  /* Paper & Canvas Textures (Inline SVG Fractal Noise) */
+  --texture-paper: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.42  0 0 0 0 0.30  0 0 0 0 0.12  0 0 0 0.085 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  --texture-brush: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='360' height='360'><filter id='b'><feTurbulence type='fractalNoise' baseFrequency='0.006 0.32' numOctaves='3' seed='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.92  0 0 0 0 0.80  0 0 0 0 0.60  0 0 0 0.055 0'/></filter><rect width='100%' height='100%' filter='url(%23b)'/></svg>");
+
+  /* Fonts (Google Fonts Bridge: Lab's Kalam + REHARM's Jakarta Sans & JetBrains Mono) */
+  --font-display: 'Kalam', cursive;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+
+  /* Type Scale */
+  --text-xs: 0.6875rem;      /* 11px */
+  --text-sm: 0.75rem;        /* 12px */
+  --text-base: 0.875rem;     /* 14px */
+  --text-md: 1rem;           /* 16px */
+  --text-lg: 1.125rem;       /* 18px */
+  --text-xl: 1.375rem;       /* 22px */
+  --text-display-md: 1.75rem;/* 28px */
+  --text-display-lg: 2.25rem;/* 36px */
+  --text-display-xl: 3rem;   /* 48px */
+
+  /* Spacing Scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --touch-min: 44px;
+
+  /* Radii */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-pill: 9999px;
+
+  /* Z-Index Layers */
+  --z-base: 0;
+  --z-card: 10;
+  --z-stamp: 15;
+  --z-header: 30;
+  --z-backdrop: 40;
+  --z-sheet: 50;
+  --z-modal: 60;
+  --z-launch: 70;
+  --z-toast: 80;
+
+  /* Breakpoints (Reference) */
+  --bp-mobile: 390px;
+  --bp-tablet: 768px;
+  --bp-desktop: 1280px;
+
+  /* Motion Durations */
+  --dur-instant: 80ms;
+  --dur-fast: 140ms;
+  --dur-normal: 240ms;
+  --dur-stamp: 320ms;
+  --dur-smooth: 360ms;
+  --dur-ceremony: 850ms;
+  --dur-celebrate: 1100ms;
+
+  /* Motion Easings */
+  --ease-snap: cubic-bezier(0.2, 0.9, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.45, 0.64, 1);
+  --ease-stamp: cubic-bezier(0.22, 1.28, 0.36, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-linear: linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-instant: 0ms;
+    --dur-fast: 0ms;
+    --dur-normal: 0ms;
+    --dur-stamp: 0ms;
+    --dur-smooth: 0ms;
+    --dur-ceremony: 0ms;
+    --dur-celebrate: 0ms;
+  }
+}
+
+[data-reduced-motion="true"] {
+  --dur-instant: 0ms;
+  --dur-fast: 0ms;
+  --dur-normal: 0ms;
+  --dur-stamp: 0ms;
+  --dur-smooth: 0ms;
+  --dur-ceremony: 0ms;
+  --dur-celebrate: 0ms;
+}

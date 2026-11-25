@@ -1,0 +1,347 @@
+@import "tailwindcss";
+
+/*
+ * Ink & Parchment design tokens (the default theme).
+ * src/design/tokens.ts exposes these to inline styles and Rough.js as var() references.
+ * `static` emits every variable even when no utility class uses it, because tokens.ts does.
+ * A new colour token must also be set in every theme block below (themes.test.ts checks).
+ */
+@theme static {
+  --color-paper: #f6e9c9;
+  --color-paper-light: #fbf3df;
+  --color-paper-shade: #ead7aa;
+
+  --color-ink: #1e2a78;
+  --color-ink-soft: #3e4c9e;
+  --color-ink-faint: #8a93c4;
+
+  --color-wash-blue: #5b85c2;
+  --color-wash-mustard: #e3b23c;
+  --color-wash-brick: #b9532f;
+  --color-wash-sage: #7e9c6b;
+  --color-pen: #c2311f;
+  /* a darkened sage for "right" marks and text: plain sage is too light to read on paper (~2.6:1) */
+  --color-sage-ink: #4a6a3a;
+
+  --font-hand: "Architects Daughter", "Noto Music", cursive;
+  --font-marker: "Kalam", "Noto Music", cursive;
+  --font-music: "Noto Music", serif;
+
+  /* chord change in the Practice HUD: ink settling onto the page */
+  --animate-ink-in: ink-in 220ms ease-out;
+  @keyframes ink-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px) rotate(-1deg);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/*
+ * Theme values that aren't Tailwind utilities. Every theme block below sets each of these
+ * (themes.test.ts checks), so a theme's look is always a deliberate choice, never a leftover.
+ */
+:root {
+  --color-key-white: #fbf3df;
+  --color-key-black: #1e2a78;
+  --color-key-line: #1e2a78;
+  --color-key-soft: #3e4c9e;
+  /* big headings (h1, h2); large text, so 3:1 is enough */
+  --color-heading: #1e2a78;
+  /* keyboard focus ring: 3:1 against the page at least */
+  --color-focus: #1e2a78;
+  --selection: color-mix(in srgb, var(--color-wash-mustard) 55%, transparent);
+  /* washes darken paper (multiply); on a dark ground they must lighten it instead (screen) */
+  --wash-blend: multiply;
+  /* the filter on lead-sheet washes, and on `.ink-wobble` headings (ids from SketchFilters) */
+  --wash-filter: url(#watercolor);
+  --wobble-filter: url(#ink-wobble);
+  /* the page's own grain (tiled), and one piece of art fixed behind everything (or none) */
+  --page-texture: var(--texture-paper);
+  --page-art: none;
+}
+
+/*
+ * Textures the themes choose from. Kept apart from the theme values above: they're a
+ * library, not settings. Each is a tiny SVG noise or drawing, low alpha, behind the cards.
+ */
+html {
+  /* paper grain: fractal noise tinted warm brown at very low alpha */
+  --texture-paper: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.42  0 0 0 0 0.30  0 0 0 0 0.12  0 0 0 0.10 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  /* oil-on-canvas: noise stretched sideways into short brush drags, in a lamp-lit cream */
+  --texture-brush: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='360' height='360'><filter id='b'><feTurbulence type='fractalNoise' baseFrequency='0.006 0.32' numOctaves='3' seed='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.92  0 0 0 0 0.80  0 0 0 0 0.60  0 0 0 0.055 0'/></filter><rect width='100%' height='100%' filter='url(%23b)'/></svg>");
+  /* the room's lamp: a warm glow from the top-left corner of the window */
+  --art-lamp: radial-gradient(ellipse 70% 55% at 6% 0%, rgb(226 180 110 / 0.1), transparent 70%);
+  /* diagonal shards, solid and hatched, anchored to the bottom-right corner of the window */
+  --art-shards: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600'><defs><pattern id='c' width='7' height='7' patternUnits='userSpaceOnUse' patternTransform='rotate(-40)'><rect width='1.2' height='7' fill='%23e2654f'/></pattern><pattern id='t' width='5' height='5' patternUnits='userSpaceOnUse' patternTransform='rotate(-40)'><rect width='1' height='5' fill='%235ea9a1'/></pattern></defs><g opacity='0.16'><polygon points='120,560 430,150 540,215 230,620' fill='%235ea9a1'/><polygon points='330,600 590,260 620,300 360,640' fill='%23e2a93a'/></g><g opacity='0.22'><polygon points='40,470 340,80 400,125 100,515' fill='url(%23c)'/><polygon points='230,420 520,40 600,95 310,470' fill='url(%23t)'/></g><polygon points='180,600 470,215 482,224 192,609' fill='%2323577a' opacity='0.12'/></svg>")
+    no-repeat right -60px bottom -60px / min(78vw, 680px);
+}
+
+/*
+ * Colour schemes (src/design/themes.ts). Each block overrides colours only, never sizes or
+ * fonts, so a layout change can't come from a theme. Every block sets the same variables.
+ */
+
+/*
+ * Comfort rules both schemes follow (themes.test.ts enforces the numbers):
+ * - body text sits at 7–13:1 on the page. Below that it strains; above it, light text on a
+ *   dark ground glows at the edges (halation), so the dark scheme uses parchment, not white,
+ *   on warm charcoal, not black;
+ * - no saturated colour as a large field: a red or black page tires the eye in minutes, so
+ *   the strong colour goes into the ink, the pen and the washes;
+ * - the pen is a different hue from the ink, so a correction never reads as plain text.
+ */
+
+/* Northgate: the club at night. Parchment type on warm charcoal, a softened poster red for
+   the pen, washes from the painting: the sax player's blue suit, brass, the orange guitar, the olive wall */
+:root[data-theme="northgate"] {
+  color-scheme: dark;
+  --color-paper: #1c1916;
+  --color-paper-light: #25211d;
+  --color-paper-shade: #352f29;
+  --color-ink: #e2d5bb;
+  --color-ink-soft: #bcab8e;
+  /* 4.5:1 on paper-light (the cards), so small faint text (octave labels, struck chords) still reads */
+  --color-ink-faint: #948875;
+  --color-wash-blue: #7f9ac0;
+  --color-wash-mustard: #d2a24e;
+  --color-wash-brick: #cf7040;
+  --color-wash-sage: #8e9a62;
+  --color-pen: #e0604f;
+  --color-sage-ink: #a5bd7c;
+  --color-key-white: #e2d5bb;
+  --color-key-black: #1c1916;
+  --color-key-line: #1c1916;
+  --color-key-soft: #5a4f44;
+  /* poster-red headings, like the "17 ANNIVERSARY" type; body text stays parchment */
+  --color-heading: #e0604f;
+  --color-focus: #d2a24e;
+  --selection: color-mix(in srgb, #d2a24e 35%, transparent);
+  --wash-blend: screen;
+  --wash-filter: url(#watercolor);
+  /* painted lettering: a slower, sideways drag instead of the pen's jitter */
+  --wobble-filter: url(#ink-brush);
+  --page-texture: var(--texture-brush);
+  --page-art: var(--art-lamp);
+}
+
+/* Panam: the cover's red as ink on the cover's cream. Deep red type, a slate-blue pen for
+   corrections (red would read as text here), and the shards as washes: teal, gold, coral, olive */
+:root[data-theme="panam"] {
+  --color-paper: #f5e6d3;
+  --color-paper-light: #fbf1e4;
+  --color-paper-shade: #ecd2bc;
+  --color-ink: #6b1016;
+  --color-ink-soft: #9b2a2a;
+  --color-ink-faint: #c08178;
+  --color-wash-blue: #5ea9a1;
+  --color-wash-mustard: #e2a93a;
+  --color-wash-brick: #e2654f;
+  --color-wash-sage: #a3a14a;
+  --color-pen: #23577a;
+  --color-sage-ink: #4a6a2a;
+  --color-key-white: #fbf1e4;
+  --color-key-black: #4a0c11;
+  --color-key-line: #4a0c11;
+  --color-key-soft: #9b2a2a;
+  --color-heading: #6b1016;
+  --color-focus: #23577a;
+  --selection: color-mix(in srgb, #5ea9a1 35%, transparent);
+  --wash-blend: multiply;
+  /* the cover is crisp geometry: hard-edged wash panels, unwobbled type */
+  --wash-filter: none;
+  --wobble-filter: none;
+  --page-texture: var(--texture-paper);
+  --page-art: var(--art-shards);
+}
+
+/*
+ * Study ↔ Practice. The lead sheet and the title are the same objects in both screens
+ * (shared view-transition-names), so they glide from one frame to the other; everything
+ * else just cross-fades underneath. The snapshots stretch to the moving frame rather than
+ * jumping when its shape changes, which reads as the paper being re-pinned.
+ */
+::view-transition-group(lead-sheet),
+::view-transition-group(tune-title) {
+  animation-duration: 420ms;
+  animation-timing-function: cubic-bezier(0.3, 0.7, 0.2, 1);
+}
+::view-transition-old(lead-sheet),
+::view-transition-new(lead-sheet) {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 240ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* the metronome dot: ink lands, spreads a touch, settles and fades before the next beat */
+.beat-blot {
+  animation: beat-blot 420ms cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+}
+@keyframes beat-blot {
+  0% {
+    transform: scale(1.35);
+    opacity: 1;
+  }
+  35% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0.9);
+    opacity: 0.25;
+  }
+}
+
+/* the reharm dial snapping to a new level under the pedal: a quick ink "click" */
+.dial-snap {
+  animation: dial-snap 260ms cubic-bezier(0.2, 0.9, 0.3, 1.4);
+}
+@keyframes dial-snap {
+  0% {
+    transform: scale(1.18) rotate(-3deg);
+  }
+  100% {
+    transform: none;
+  }
+}
+/* the pedal's needle glides between controller messages (they arrive in steps) */
+.pedal-needle {
+  transition: transform 70ms linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-ink-in {
+    animation: none;
+  }
+  /* no growing/shrinking: the blot just appears on the beat */
+  .beat-blot {
+    animation: none;
+  }
+  .dial-snap {
+    animation: none;
+  }
+  .pedal-needle {
+    transition: none;
+  }
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+  body {
+    margin: 0;
+    color: var(--color-ink);
+    font-family: var(--font-hand);
+    background-color: var(--color-paper);
+    background-image: var(--page-texture);
+  }
+  /*
+   * The theme's art: fixed to the window, behind all content (z-index -1 under the root
+   * stacking context, above the page colour) and never in the way of a click.
+   */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: var(--page-art);
+  }
+  h1,
+  h2 {
+    color: var(--color-heading);
+  }
+  /*
+   * The keyboard focus ring, for everything focusable (keyboard only: `:focus-visible` skips
+   * mouse clicks). An ink ring 2px out, with the gap filled in light paper, so it stays a
+   * separate line on an ink-filled pill, a wash or a shaded card, never merging into the fill.
+   * Components don't restyle it; one with its own `shadow-*` keeps that shadow and the ring.
+   */
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--color-paper-light);
+  }
+  /*
+   * Tabbing to something below the fold scrolls it only just into view, flush with the
+   * scroller's edge, which cut the ring (2px out + 2px wide) off. Scrollers keep a margin.
+   */
+  .overflow-auto,
+  .overflow-y-auto,
+  .overflow-x-auto {
+    scroll-padding: 0.5rem;
+  }
+  ::selection {
+    background: var(--selection);
+  }
+}
+
+@layer components {
+  /* Wobbly ink: SVG displacement applied to hand-drawn headings. */
+  .ink-wobble {
+    filter: var(--wobble-filter);
+  }
+  .wash {
+    mix-blend-mode: var(--wash-blend);
+  }
+  /* the lead sheet's move washes: watercolour bleed, or hard-edged panels (Panam) */
+  .wash-shapes {
+    filter: var(--wash-filter);
+  }
+}
+
+/*
+ * Touch. A finger is ~10mm, not a cursor's single pixel: on coarse pointers every pill button,
+ * tab and toggle grows to at least 44px tall (Apple HIG / WCAG 2.5.5), the label around a
+ * checkbox becomes the tap target, and taps skip the double-tap-to-zoom wait. Pinch zoom
+ * still works. (Hover styles need no guard: Tailwind v4 only applies `hover:` where hover exists.)
+ */
+@utility tap-lg {
+  min-height: 3rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+@layer base {
+  button,
+  a,
+  label,
+  select,
+  summary,
+  input,
+  [role="button"] {
+    touch-action: manipulation;
+  }
+  /* no long-press callout or text selection on things you press and hold, like piano keys */
+  svg[role="group"] {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}
+@media (pointer: coarse) {
+  button.rounded-full:not([data-circle-key]),
+  [role="tab"],
+  [role="radio"]:not([data-circle-key]),
+  select {
+    min-height: 44px;
+  }
+  label:has(> input[type="checkbox"]) {
+    min-height: 44px;
+  }
+}

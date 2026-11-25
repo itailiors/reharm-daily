@@ -1,0 +1,2713 @@
+<!DOCTYPE html>
+<html lang="en" data-reduced-motion="false">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Reharm Daily — Daily Music Games Hub (Prototype)</title>
+  <meta property="og:title" content="Reharm Daily — Daily Music Games" />
+  <meta property="og:description" content="Daily music puzzles you can hear — and play. Chords, voice-leading ladders, ear connections, groove repair, and odd meter." />
+  <meta property="og:image" content="../../assets/brand/og-image.jpg" />
+  <link rel="icon" type="image/svg+xml" href="../../assets/brand/favicon.svg" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/brand/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Kalam:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../tokens.css" />
+  <style>
+    /* =========================================================================
+       Base & Broadsheet Canvas ("The Daily Sheet")
+       ========================================================================= */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      max-width: 100vw;
+      min-height: 100dvh;
+      background-color: var(--bg-canvas);
+      background-image: var(--page-texture);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: var(--text-base);
+      line-height: 1.45;
+      overflow-x: clip;
+      transition: background-color var(--dur-normal) var(--ease-out),
+                  color var(--dur-normal) var(--ease-out);
+    }
+
+    button, a {
+      font: inherit;
+      color: inherit;
+      text-decoration: none;
+      touch-action: manipulation;
+    }
+
+    button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      user-select: none;
+    }
+
+    button:focus-visible,
+    a:focus-visible,
+    [tabindex]:focus-visible,
+    input:focus-visible {
+      outline: 2px solid var(--focus-ring);
+      outline-offset: 2px;
+      box-shadow: 0 0 0 4px var(--focus-gap);
+    }
+
+    .mono {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .display {
+      font-family: var(--font-display);
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
+    .ico {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .ico-sm { width: 15px; height: 15px; }
+    .ico-lg { width: 22px; height: 22px; }
+
+    /* =========================================================================
+       Discreet Reviewer Control Ribbon (Prototype State Switcher)
+       ========================================================================= */
+    .proto-ribbon {
+      position: sticky;
+      top: 0;
+      z-index: var(--z-header);
+      background: var(--bg-well);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .proto-ribbon::-webkit-scrollbar { display: none; }
+
+    .proto-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      white-space: nowrap;
+      flex-shrink: 0;
+      padding-right: 4px;
+    }
+
+    .proto-btn {
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: var(--radius-pill);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: border-color var(--dur-fast) var(--ease-snap),
+                  background-color var(--dur-fast) var(--ease-snap);
+    }
+
+    .proto-btn:hover {
+      border-color: var(--border-ink);
+      color: var(--text-primary);
+    }
+
+    .proto-btn[aria-pressed="true"],
+    .proto-btn.is-active {
+      background: var(--accent-primary-solid-bg);
+      border-color: var(--accent-primary-solid-bg);
+      color: var(--accent-primary-solid-ink);
+    }
+
+    .proto-btn.is-pen {
+      border-color: var(--accent-pen-border);
+      color: var(--accent-pen);
+      background: var(--accent-pen-bg);
+    }
+
+    .proto-div {
+      width: 1px;
+      height: 18px;
+      background: var(--border-subtle);
+      flex-shrink: 0;
+      margin: 0 2px;
+    }
+
+    /* =========================================================================
+       App Shell Layout (390x844 Mobile First -> 1280x800 Desktop Broadsheet)
+       ========================================================================= */
+    .daily-shell {
+      width: 100%;
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 12px 14px calc(32px + env(safe-area-inset-bottom));
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: relative;
+      min-width: 0;
+    }
+
+    @media (min-width: 768px) {
+      .daily-shell {
+        padding: 22px 32px 48px;
+        gap: 18px;
+      }
+    }
+
+    /* System Notice Banner (Storage Blocked / Offline) */
+    .system-banner {
+      display: none;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      background: var(--status-warn-bg);
+      border: 1.5px solid var(--status-warn-border);
+      color: var(--status-warn-fg);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .system-banner[data-visible="true"] {
+      display: flex;
+    }
+    .system-banner-body {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      font-weight: 500;
+    }
+    .system-banner-close {
+      min-width: 44px;
+      min-height: 44px;
+      margin: -8px -8px -8px 0;
+      display: grid;
+      place-items: center;
+      border-radius: var(--radius-sm);
+    }
+
+    /* =========================================================================
+       Masthead Header
+       ========================================================================= */
+    .daily-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border-ink);
+    }
+
+    .brand-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 44px;
+    }
+
+    .logo-img {
+      height: 31px;
+      width: auto;
+      max-width: 175px;
+      display: block;
+    }
+    .logo-dark { display: none; }
+    [data-theme="dark"] .logo-light { display: none; }
+    [data-theme="dark"] .logo-dark { display: block; }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) .logo-light { display: none; }
+      :root:not([data-theme="light"]) .logo-dark { display: block; }
+    }
+
+    @media (min-width: 768px) {
+      .logo-img { height: 42px; max-width: none; }
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .edition-chip {
+      min-height: 44px;
+      padding: 0 11px;
+      border-radius: var(--radius-pill);
+      background: var(--bg-surface);
+      border: 1.5px solid var(--border-ink);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .edition-chip:hover { background: var(--bg-elevated); }
+    .edition-date { display: none; color: var(--text-muted); font-weight: 500; }
+    @media (min-width: 640px) {
+      .edition-date { display: inline; }
+    }
+
+    .icon-btn {
+      min-width: 44px;
+      min-height: 44px;
+      border-radius: var(--radius-pill);
+      background: var(--bg-surface);
+      border: 1.5px solid var(--border-ink);
+      display: grid;
+      place-items: center;
+      color: var(--text-primary);
+      transition: background-color var(--dur-fast) var(--ease-snap);
+    }
+    .icon-btn:hover { background: var(--bg-elevated); }
+
+    /* =========================================================================
+       Daily Ritual Progress Card
+       ========================================================================= */
+    .ritual-card {
+      background: var(--bg-surface);
+      border: 2px solid var(--border-ink);
+      border-radius: var(--radius-lg);
+      padding: 13px 15px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .ritual-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .ritual-heading {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .ritual-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .ritual-sub {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .ritual-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    .streak-pill {
+      min-height: 44px;
+      padding: 0 12px;
+      border-radius: var(--radius-pill);
+      background: var(--accent-brass-bg);
+      border: 1.5px solid var(--accent-brass-border);
+      color: var(--accent-brass);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: transform var(--dur-fast) var(--ease-snap);
+    }
+    .streak-pill.is-ticking {
+      animation: daily-streak-pop var(--dur-smooth) var(--ease-spring);
+    }
+
+    .btn-primary {
+      min-height: 44px;
+      padding: 0 16px;
+      border-radius: var(--radius-pill);
+      background: var(--accent-primary-solid-bg);
+      color: var(--accent-primary-solid-ink);
+      font-weight: 700;
+      font-size: 13.5px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: transform var(--dur-instant) var(--ease-snap),
+                  background-color var(--dur-fast) var(--ease-snap);
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: var(--accent-primary-hover);
+    }
+    .btn-primary:active:not(:disabled) {
+      transform: scale(0.985);
+    }
+    .btn-primary:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      min-height: 44px;
+      padding: 0 14px;
+      border-radius: var(--radius-pill);
+      background: var(--bg-elevated);
+      border: 1.5px solid var(--border-ink);
+      color: var(--text-primary);
+      font-weight: 700;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background-color var(--dur-fast) var(--ease-snap),
+                  transform var(--dur-instant) var(--ease-snap);
+    }
+    .btn-secondary:hover { background: var(--bg-hover); }
+    .btn-secondary:active { transform: scale(0.985); }
+
+    .meter-track {
+      display: grid;
+      gap: 6px;
+    }
+
+    .meter-seg {
+      position: relative;
+      height: 8px;
+      border-radius: var(--radius-pill);
+      background: var(--bg-well);
+      border: 1px solid var(--border-subtle);
+      overflow: hidden;
+    }
+
+    .meter-seg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      transform-origin: left center;
+      transform: scaleX(0);
+      transition: transform var(--dur-smooth) var(--ease-out);
+    }
+
+    .meter-seg[data-seg-state="done"]::after {
+      background: var(--status-done-fg);
+      transform: scaleX(1);
+    }
+    .meter-seg[data-seg-state="in_progress"]::after {
+      background: var(--wash-mustard);
+      transform: scaleX(0.55);
+    }
+    .meter-seg[data-seg-state="ghost"] {
+      border-style: dashed;
+      opacity: 0.55;
+    }
+
+    /* =========================================================================
+       End-of-Day All-Done Celebration Card
+       ========================================================================= */
+    .celebration-card {
+      display: none;
+      position: relative;
+      overflow: hidden;
+      background: var(--accent-brass-bg);
+      border: 2px solid var(--border-ink);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      box-shadow: var(--shadow-card);
+      gap: 12px;
+      flex-direction: column;
+      animation: daily-card-in var(--dur-smooth) var(--ease-out);
+    }
+
+    .celebration-card[data-visible="true"] {
+      display: flex;
+    }
+
+    @media (min-width: 768px) {
+      .celebration-card {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 22px;
+      }
+    }
+
+    .clean-stamp {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transform: rotate(-3deg);
+      padding: 3px 10px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-surface);
+      border: 2px solid var(--accent-pen);
+      color: var(--accent-pen);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      width: fit-content;
+      margin-bottom: 4px;
+    }
+
+    .celebration-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    .celebration-meta {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .celebration-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .confetti-burst {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .confetti-dot {
+      position: absolute;
+      width: 7px;
+      height: 7px;
+      border-radius: 2px;
+      opacity: 0;
+    }
+    .celebration-card.is-celebrating .confetti-dot {
+      animation: daily-confetti var(--dur-celebrate) var(--ease-out) forwards;
+    }
+
+    /* =========================================================================
+       Section Headers & Responsive Grids
+       ========================================================================= */
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.15;
+      margin: 0;
+    }
+
+    .section-kicker {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .launch-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 14px;
+    }
+    @media (min-width: 768px) {
+      .launch-grid {
+        grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.85fr);
+        align-items: stretch;
+      }
+    }
+
+    .live-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 14px;
+    }
+    @media (min-width: 768px) {
+      .live-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (min-width: 1024px) {
+      .live-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .soon-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 12px;
+    }
+    @media (min-width: 640px) {
+      .soon-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (min-width: 960px) {
+      .soon-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    /* =========================================================================
+       Game Cartridge Card System
+       ========================================================================= */
+    .game-card {
+      min-width: 0;
+      width: 100%;
+      background: var(--bg-surface);
+      border: 2px solid var(--border-ink);
+      border-radius: var(--radius-lg);
+      padding: 12px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      transition: transform var(--dur-fast) var(--ease-snap),
+                  box-shadow var(--dur-fast) var(--ease-snap),
+                  border-color var(--dur-fast) var(--ease-snap);
+      animation: daily-card-in var(--dur-normal) var(--ease-out) backwards;
+      animation-delay: calc(min(var(--card-index, 0), 6) * 40ms);
+    }
+
+    @media (hover: hover) {
+      .game-card:not([data-status="planned"]):hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-card-hover);
+      }
+    }
+
+    .game-card[data-status="planned"] {
+      background: var(--bg-elevated);
+      border: 1.5px dashed var(--border-strong);
+      box-shadow: none;
+    }
+
+    .game-card[data-status="lab"] {
+      background: var(--bg-surface);
+      border-color: var(--border-ink);
+    }
+
+    .cover-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      border-radius: var(--radius-md);
+      position: relative;
+    }
+
+    .cover-window {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1.5px solid var(--border-strong);
+      background: var(--bg-well);
+      position: relative;
+    }
+
+    .cover-window img.cover-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform var(--dur-fast) var(--ease-snap);
+    }
+
+    @media (hover: hover) {
+      .game-card:not([data-status="planned"]):hover .cover-window img.cover-img {
+        transform: scale(1.015);
+      }
+    }
+
+    .game-card[data-status="planned"] .cover-window img.cover-img {
+      filter: saturate(0.65);
+      opacity: 0.86;
+    }
+
+    .coming-stamp-overlay {
+      position: absolute;
+      right: 8px;
+      bottom: 8px;
+      width: 112px;
+      height: auto;
+      pointer-events: none;
+    }
+
+    /* Red-pen DONE stamp */
+    .stamp-done {
+      position: absolute;
+      top: 9px;
+      right: 9px;
+      transform: rotate(-6deg);
+      padding: 3px 9px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-surface);
+      border: 2px solid var(--accent-pen);
+      color: var(--accent-pen);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.24);
+      pointer-events: none;
+    }
+    .game-card[data-stamping="true"] .stamp-done {
+      animation: daily-stamp-land var(--dur-stamp) var(--ease-stamp);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card-title-btn {
+      text-align: left;
+      font-family: var(--font-display);
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--text-primary);
+      padding: 2px 0;
+    }
+    .card-title-btn:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      align-items: center;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.25;
+      border: 1px solid transparent;
+    }
+
+    .pill-done {
+      background: var(--status-done-bg);
+      color: var(--status-done-fg);
+      border-color: var(--status-done-border);
+    }
+    .pill-progress {
+      background: var(--status-progress-bg);
+      color: var(--status-progress-fg);
+      border-color: var(--status-progress-border);
+    }
+    .pill-new {
+      background: var(--status-new-bg);
+      color: var(--status-new-fg);
+      border-color: var(--status-new-border);
+    }
+    .pill-soon {
+      background: var(--status-soon-bg);
+      color: var(--status-soon-fg);
+      border-color: var(--status-soon-border);
+    }
+    .pill-muted-ok {
+      background: var(--status-muted-ok-bg);
+      color: var(--status-muted-ok-fg);
+    }
+    .pill-audio {
+      background: var(--status-audio-bg);
+      color: var(--status-audio-fg);
+    }
+    .pill-neutral {
+      background: var(--bg-elevated);
+      color: var(--text-secondary);
+    }
+    .pill-lab {
+      background: var(--accent-brass-bg);
+      color: var(--accent-brass);
+      border-color: var(--accent-brass-border);
+    }
+
+    .card-pitch {
+      margin: 0;
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+      flex: 1;
+    }
+
+    .card-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .card-actions .btn-primary,
+    .card-actions .btn-secondary {
+      flex: 1;
+    }
+
+    .card-actions .btn-icon-only {
+      flex: 0 0 44px;
+      min-width: 44px;
+      min-height: 44px;
+      border-radius: var(--radius-pill);
+      background: var(--bg-elevated);
+      border: 1.5px solid var(--border-ink);
+      display: grid;
+      place-items: center;
+    }
+
+    .bell-btn[aria-pressed="true"] {
+      background: var(--status-done-bg);
+      border-color: var(--status-done-border);
+      color: var(--status-done-fg);
+    }
+
+    /* =========================================================================
+       Dialogs / Bottom Sheets (Detail, Share, Stats, Settings, Intro, Bridges)
+       ========================================================================= */
+    .backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: var(--z-backdrop);
+      background: var(--bg-backdrop);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0;
+      animation: daily-fade-in var(--dur-normal) var(--ease-out);
+    }
+
+    .backdrop[data-open="true"] {
+      display: flex;
+    }
+
+    @media (min-width: 768px) {
+      .backdrop {
+        align-items: center;
+        padding: 24px;
+      }
+    }
+
+    .sheet {
+      width: 100%;
+      max-width: 500px;
+      max-height: 90dvh;
+      overflow-y: auto;
+      background: var(--bg-surface);
+      border: 2px solid var(--border-ink);
+      border-bottom: none;
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+      padding: 16px 18px calc(22px + env(safe-area-inset-bottom));
+      box-shadow: var(--shadow-sheet);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      animation: daily-sheet-up var(--dur-smooth) var(--ease-out);
+    }
+
+    @media (min-width: 768px) {
+      .sheet {
+        border-bottom: 2px solid var(--border-ink);
+        border-radius: var(--radius-xl);
+        padding: 22px 24px;
+        box-shadow: var(--shadow-modal);
+      }
+      .sheet.sheet-wide {
+        max-width: 820px;
+      }
+    }
+
+    .sheet-handle {
+      width: 40px;
+      height: 4px;
+      border-radius: 99px;
+      background: var(--border-strong);
+      margin: -4px auto 2px;
+    }
+    @media (min-width: 768px) {
+      .sheet-handle { display: none; }
+    }
+
+    .sheet-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .sheet-title {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .how-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .how-list li {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 8px;
+      align-items: start;
+      font-size: 13.5px;
+      color: var(--text-secondary);
+    }
+
+    .how-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 99px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-ink);
+      display: grid;
+      place-items: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* Share Card Terminal Box */
+    .share-well {
+      background: var(--bg-well);
+      border: 1.5px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      color: var(--text-primary);
+      box-shadow: var(--shadow-well);
+    }
+
+    .segmented {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 1fr;
+      gap: 4px;
+      padding: 4px;
+      border-radius: var(--radius-pill);
+      background: var(--bg-well);
+      border: 1.5px solid var(--border-ink);
+    }
+
+    .seg-btn {
+      min-height: 40px;
+      padding: 0 10px;
+      border-radius: var(--radius-pill);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .seg-btn[aria-pressed="true"] {
+      background: var(--accent-primary-solid-bg);
+      color: var(--accent-primary-solid-ink);
+    }
+
+    /* Stats & Trophy Drawer */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    @media (min-width: 640px) {
+      .kpi-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    .kpi-tile {
+      background: var(--bg-elevated);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 10px;
+      text-align: center;
+    }
+
+    .kpi-val {
+      font-family: var(--font-mono);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.1;
+    }
+
+    .kpi-lbl {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-top: 3px;
+    }
+
+    .week-row {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+
+    .day-cell {
+      background: var(--bg-elevated);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 7px 4px;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .day-cell.is-hit {
+      background: var(--status-done-bg);
+      border-color: var(--status-done-border);
+      color: var(--status-done-fg);
+    }
+    .day-cell.is-clean {
+      box-shadow: inset 0 0 0 1.5px var(--accent-brass);
+    }
+
+    .badge-shelf {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .trophy-pin {
+      background: var(--bg-well);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 8px 6px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .trophy-pin img {
+      width: 40px;
+      height: 40px;
+      display: block;
+    }
+    .trophy-pin.is-locked img {
+      filter: grayscale(1);
+      opacity: 0.35;
+    }
+    .trophy-pin span {
+      font-size: 10.5px;
+      font-weight: 600;
+      line-height: 1.2;
+      color: var(--text-secondary);
+    }
+
+    /* Lab Move Chip */
+    .daily-lab-chip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      background: #FBF3DF;
+      border: 1.8px solid #1E2A78;
+      color: #1E2A78;
+      min-height: 48px;
+    }
+    .daily-lab-chip-mark {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      background: #F6E9C9;
+      border: 1.5px solid #1E2A78;
+      display: grid;
+      place-items: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 13px;
+      color: #A52213;
+      flex-shrink: 0;
+    }
+    .daily-lab-chip-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+    .daily-lab-chip-sub {
+      font-size: 11.5px;
+      color: #2F3C8A;
+    }
+    .daily-lab-chip-go {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: #A52213;
+      white-space: nowrap;
+    }
+
+    /* Launch Transition Veil */
+    .launch-veil {
+      position: fixed;
+      inset: 0;
+      z-index: var(--z-launch);
+      background: var(--bg-backdrop);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .launch-veil[data-active="true"] { display: flex; }
+    .launch-card {
+      width: 100%;
+      max-width: 390px;
+      background: var(--bg-surface);
+      border: 2px solid var(--border-ink);
+      border-radius: var(--radius-xl);
+      padding: 18px;
+      box-shadow: var(--shadow-modal);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-align: center;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(18px + env(safe-area-inset-bottom));
+      transform: translateX(-50%) translateY(14px);
+      z-index: var(--z-toast);
+      background: var(--accent-primary-solid-bg);
+      color: var(--accent-primary-solid-ink);
+      padding: 10px 16px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 700;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--dur-normal) var(--ease-out),
+                  transform var(--dur-normal) var(--ease-out);
+      max-width: calc(100vw - 28px);
+      text-align: center;
+    }
+    .toast[data-visible="true"] {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Setting Switch Row */
+    .setting-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .setting-row:last-child { border-bottom: none; }
+    .setting-title { font-weight: 700; font-size: 14px; }
+    .setting-desc { font-size: 12px; color: var(--text-muted); }
+
+    .toggle-pill {
+      min-width: 68px;
+      min-height: 44px;
+      padding: 0 12px;
+      border-radius: var(--radius-pill);
+      border: 1.5px solid var(--border-ink);
+      background: var(--bg-elevated);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .toggle-pill[aria-pressed="true"] {
+      background: var(--status-done-bg);
+      border-color: var(--status-done-border);
+      color: var(--status-done-fg);
+    }
+
+    /* Bridge Showcase Styles inside Modal */
+    .bridge-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    @media (min-width: 768px) {
+      .bridge-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .bridge-host {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1.5px solid var(--bridge-border);
+      background: var(--bridge-bg);
+      color: var(--bridge-text);
+      font-family: var(--font-sans);
+    }
+    .bridge-host.is-reharm {
+      --bridge-bg: #111215;
+      --bridge-bar: #16181D;
+      --bridge-elevated: #22252C;
+      --bridge-border: #2B2F3A;
+      --bridge-text: #F4F1EA;
+      --bridge-muted: #B2B6C2;
+      --bridge-accent: #E8A849;
+      --bridge-accent-ink: #14120E;
+    }
+    .bridge-host.is-stepwise {
+      --bridge-bg: #F4F1EA;
+      --bridge-bar: #EFECE3;
+      --bridge-elevated: #EAE6DC;
+      --bridge-border: #C8C1B2;
+      --bridge-text: #182026;
+      --bridge-muted: #4C565E;
+      --bridge-accent: #0F5E57;
+      --bridge-accent-ink: #FBF3DF;
+    }
+    .daily-bridge-bar {
+      height: 38px;
+      padding: 0 12px;
+      background: var(--bridge-bar);
+      border-bottom: 1px solid var(--bridge-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .daily-back-link { color: var(--bridge-accent); }
+    .daily-next-card {
+      margin: 12px;
+      padding: 11px 12px;
+      border-radius: 10px;
+      background: var(--bridge-elevated);
+      border: 1px solid var(--bridge-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .daily-next-cta {
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: var(--bridge-accent);
+      color: var(--bridge-accent-ink);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* =========================================================================
+       Keyframes (motion-spec.md)
+       ========================================================================= */
+    @keyframes daily-card-in {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes daily-fade-in {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes daily-sheet-up {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes daily-stamp-land {
+      0%   { opacity: 0; transform: rotate(-14deg) scale(1.48); }
+      65%  { opacity: 1; transform: rotate(-5.5deg) scale(0.94); }
+      100% { opacity: 1; transform: rotate(-6deg) scale(1); }
+    }
+    @keyframes daily-streak-pop {
+      0%   { transform: scale(1); }
+      45%  { transform: scale(1.2) translateY(-2px); }
+      100% { transform: scale(1) translateY(0); }
+    }
+    @keyframes daily-confetti {
+      0%   { opacity: 0.95; transform: translate(0, 0) scale(1); }
+      100% { opacity: 0; transform: translate(var(--dx, 18px), var(--dy, -22px)) rotate(140deg) scale(0.5); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0ms !important; transition-duration: 0ms !important; }
+    }
+    [data-reduced-motion="true"] *,
+    [data-reduced-motion="true"] *::before,
+    [data-reduced-motion="true"] *::after {
+      animation-duration: 0ms !important;
+      transition-duration: 0ms !important;
+    }
+  </style>
+</head>
+<body>
+  <!-- Inline SVG Icon Sprite (zero file:// CORS dependencies; mirrors assets/icons/sprite.svg) -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+    <symbol id="icon-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="7 5 19 12 7 19 7 5"/></symbol>
+    <symbol id="icon-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></symbol>
+    <symbol id="icon-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></symbol>
+    <symbol id="icon-external-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14L21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></symbol>
+    <symbol id="icon-check-stamp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 5-5.5"/></symbol>
+    <symbol id="icon-flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5c.8 3.2 4.5 5.2 4.5 9.2a4.5 4.5 0 1 1-9 0c0-2.1 1-3.9 2.3-5.2.3 1.4 1.1 2.2 2.2 2.5-.6-2-.5-4.3 0-6.5z"/></symbol>
+    <symbol id="icon-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.75"/><circle cx="6" cy="12" r="2.75"/><circle cx="18" cy="19" r="2.75"/><path d="M8.5 13.3l7 3.9"/><path d="M15.5 6.8l-7 3.9"/></symbol>
+    <symbol id="icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+    <symbol id="icon-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.6.85 1 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+    <symbol id="icon-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+    <symbol id="icon-bell-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/><path d="M9.5 11.5l1.8 1.8 3.5-3.8"/></symbol>
+    <symbol id="icon-headphones" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3v5z"/><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3v5z"/></symbol>
+    <symbol id="icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
+    <symbol id="icon-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4"/><path d="M16 2v4"/><path d="M3 10h18"/></symbol>
+    <symbol id="icon-trophy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M6 4h12v5a6 6 0 0 1-12 0V4z"/><path d="M12 15v5"/><path d="M8 20h8"/></symbol>
+    <symbol id="icon-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15z"/></symbol>
+    <symbol id="icon-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4"/><path d="M12 8h.01"/></symbol>
+    <symbol id="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></symbol>
+    <symbol id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/></symbol>
+    <symbol id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.5 6.5 0 0 0 9.8 9.8z"/></symbol>
+    <symbol id="icon-wifi-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 2l20 20"/><path d="M8.5 16.5a5 5 0 0 1 7 0"/><path d="M5 13a10 10 0 0 1 5.1-2.7"/><path d="M15.8 10.6A10 10 0 0 1 19 13"/><path d="M12 20h.01"/></symbol>
+    <symbol id="icon-shield-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.4 8.2-8 9.5C7.4 20.2 4 17 4 12V6l8-3z"/><path d="M12 8v4"/><path d="M12 16h.01"/></symbol>
+    <symbol id="icon-book-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h7a3 3 0 0 1 3 3v13a2.5 2.5 0 0 0-2.5-2.5H2V4z"/><path d="M22 4h-7a3 3 0 0 0-3 3v13a2.5 2.5 0 0 1 2.5-2.5H22V4z"/></symbol>
+  </svg>
+
+  <!-- Prototype Reviewer Ribbon -->
+  <nav class="proto-ribbon" aria-label="Prototype state switcher">
+    <span class="proto-tag">State</span>
+    <button class="proto-btn" data-preset="launch" aria-pressed="true">Launch (1+6)</button>
+    <button class="proto-btn" data-preset="midday" aria-pressed="false">Mid-Day (3/7)</button>
+    <button class="proto-btn" data-preset="alldone" aria-pressed="false">All Done (7/7)</button>
+    <button class="proto-btn" data-preset="firstvisit" aria-pressed="false">First Visit</button>
+    <button class="proto-btn" data-preset="storage" aria-pressed="false">Storage Blocked</button>
+    <button class="proto-btn" data-preset="offline" aria-pressed="false">Offline</button>
+    <span class="proto-div"></span>
+    <button class="proto-btn is-pen" id="btn-stamp-demo">Stamp Done ✓</button>
+    <button class="proto-btn" id="btn-open-bridges">Bridge Skins</button>
+    <span class="proto-div"></span>
+    <button class="proto-btn" id="btn-cycle-theme">Theme: System</button>
+    <button class="proto-btn" id="btn-toggle-motion" aria-pressed="false">Motion: On</button>
+  </nav>
+
+  <!-- Main Broadsheet Shell -->
+  <main class="daily-shell" id="app-shell" data-roster="launch" data-all-done="false">
+    <!-- Warning Banner -->
+    <div class="system-banner" id="system-banner" role="status" data-visible="false">
+      <div class="system-banner-body">
+        <svg class="ico" id="banner-icon"><use href="#icon-shield-alert"/></svg>
+        <span id="banner-text"></span>
+      </div>
+      <button class="system-banner-close" id="btn-dismiss-banner" type="button" aria-label="Dismiss notice">
+        <svg class="ico-sm"><use href="#icon-close"/></svg>
+      </button>
+    </div>
+
+    <!-- Masthead -->
+    <header class="daily-header" role="banner">
+      <a class="brand-link" href="#top" aria-label="Reharm Daily home">
+        <img class="logo-img logo-light" src="../../assets/brand/logo.svg" alt="Reharm Daily" />
+        <img class="logo-img logo-dark" src="../../assets/brand/logo-dark.svg" alt="Reharm Daily" />
+      </a>
+      <div class="header-actions">
+        <button class="edition-chip" id="btn-open-stats-top" type="button" aria-label="Daily edition #42 and stats">
+          <span>#42</span>
+          <span class="edition-date">· Nov 25</span>
+        </button>
+        <button class="icon-btn" id="btn-open-intro" type="button" aria-label="How Reharm Daily works">
+          <svg class="ico"><use href="#icon-info"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-open-settings" type="button" aria-label="Settings">
+          <svg class="ico"><use href="#icon-settings"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Daily Ritual Progress Card -->
+    <section class="ritual-card" id="ritual-card" aria-label="Daily puzzle progress">
+      <div class="ritual-top">
+        <div class="ritual-heading">
+          <div class="ritual-title" id="ritual-title">Today · 0 of 1 played</div>
+          <div class="ritual-sub" id="ritual-sub">Pick a puzzle · Resets in <span class="mono" id="midnight-clock">04:12:09</span></div>
+        </div>
+        <div class="ritual-controls">
+          <button class="streak-pill" id="btn-open-stats" type="button" aria-label="Open streaks and trophy shelf">
+            <svg class="ico-sm"><use href="#icon-flame"/></svg>
+            <span id="streak-count">5d</span>
+          </button>
+          <button class="btn-primary" id="btn-open-share" type="button" disabled title="Finish 1 puzzle to unlock today's share card">
+            <svg class="ico-sm"><use href="#icon-share"/></svg>
+            <span>Share</span>
+          </button>
+        </div>
+      </div>
+      <div class="meter-track" id="meter-track" role="progressbar" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0"></div>
+    </section>
+
+    <!-- End-of-Day All-Done Celebration Card -->
+    <section class="celebration-card" id="celebration-card" aria-live="polite" data-visible="false">
+      <div class="confetti-burst" aria-hidden="true" id="confetti-burst"></div>
+      <div>
+        <div class="clean-stamp">
+          <svg class="ico-sm"><use href="#icon-check-stamp"/></svg>
+          <span>CLEAN SHEET ✓</span>
+        </div>
+        <h2 class="celebration-title" id="celebration-title">All puzzles played today!</h2>
+        <p class="celebration-meta" id="celebration-meta">Next daily sheet drops in 04:12:09 local time.</p>
+      </div>
+      <div class="celebration-actions">
+        <button class="btn-primary" id="btn-celebrate-share" type="button">
+          <svg class="ico-sm"><use href="#icon-copy"/></svg>
+          <span>Copy Combined Share Card</span>
+        </button>
+        <button class="btn-secondary" id="btn-celebrate-lab" type="button">
+          <svg class="ico-sm"><use href="#icon-book-open"/></svg>
+          <span>Practice in Reharm Lab ↗</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Dynamic Today Sections Container -->
+    <div id="board-sections" style="display:flex;flex-direction:column;gap:14px;"></div>
+  </main>
+
+  <!-- Backdrop & Reusable Modal / Bottom Sheet Container -->
+  <div class="backdrop" id="modal-backdrop" data-open="false" role="presentation">
+    <section class="sheet" id="sheet-dialog" role="dialog" aria-modal="true" aria-labelledby="sheet-heading" tabindex="-1">
+      <div class="sheet-handle" aria-hidden="true"></div>
+      <div class="sheet-head">
+        <h2 class="sheet-title" id="sheet-heading">Dialog</h2>
+        <button class="icon-btn" id="btn-close-sheet" type="button" aria-label="Close dialog">
+          <svg class="ico"><use href="#icon-close"/></svg>
+        </button>
+      </div>
+      <div id="sheet-body" style="display:flex;flex-direction:column;gap:14px;"></div>
+    </section>
+  </div>
+
+  <!-- Card -> Game Launch Transition Veil -->
+  <div class="launch-veil" id="launch-veil" data-active="false" role="dialog" aria-modal="true" aria-labelledby="launch-title">
+    <div class="launch-card">
+      <div class="cover-window" style="border-width:2px;">
+        <img class="cover-img" id="launch-cover" src="" alt="" />
+      </div>
+      <h2 class="sheet-title" id="launch-title">Opening REHARM #42…</h2>
+      <p id="launch-desc" style="margin:0;color:var(--text-secondary);font-size:13px;"></p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button class="btn-primary" id="btn-sim-complete" type="button">Simulate Finish &amp; Return with Score ✓</button>
+        <button class="btn-secondary" id="btn-launch-cancel" type="button">Back to Today's Sheet</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" data-visible="false"></div>
+
+  <script>
+    /* =========================================================================
+       Inlined Catalog Data (brief/games.json + UX copy, cover paths & badges)
+       ========================================================================= */
+    const CATALOG = {
+      hub: {
+        name: "Reharm Daily",
+        plannedUrl: "https://itailiors.github.io/reharm-daily/",
+        epoch: "2026-11-25",
+        puzzleNo: 42
+      },
+      lab: {
+        name: "Reharm Lab",
+        url: "https://itailiors.github.io/reharm-lab/"
+      },
+      games: [
+        {
+          id: "reharm",
+          name: "REHARM",
+          status: "live",
+          url: "https://itailiors.github.io/reharm/",
+          archiveUrl: "https://itailiors.github.io/reharm/#archive",
+          cover: "../../assets/covers/reharm.svg",
+          pitch: "Four bars. One melody. Pick the chords; rarer harmony scores higher.",
+          archetype: "Krillion-style open-ended",
+          estMinutes: 3,
+          mutedFriendly: "partly",
+          mutedLabel: "Muted OK (Partly)",
+          mutedDetail: "Visual playhead & contour pills work muted; Rhodes audio recommended.",
+          scoreUnit: "Spice score 0–100 + rarity percentile",
+          howToPlay: [
+            "Hear today's 4-bar melody (Bar 1 is locked as the harmonic anchor).",
+            "Drop chords into Bars 2–4 using the 2-tap palette or sticky piano.",
+            "Lock your mix: any legal progression passes, rarer moves score higher."
+          ],
+          labLinks: [
+            { slug: "tritone-sub", label: "Tritone Sub" },
+            { slug: "backdoor-dominant", label: "Backdoor Dominant" },
+            { slug: "modal-interchange", label: "Modal Interchange" },
+            { slug: "chromatic-mediant", label: "Chromatic Mediant" }
+          ]
+        },
+        {
+          id: "chord-trench",
+          name: "CHORD TRENCH",
+          status: "planned",
+          url: "https://itailiors.github.io/chord-trench/",
+          cover: "../../assets/covers/chord-trench.svg",
+          pitch: "Six timed rounds. Any valid chord survives; spicier chords dive deeper.",
+          archetype: "Krillion-style timed",
+          estMinutes: 3,
+          mutedFriendly: "yes",
+          mutedLabel: "Silent OK",
+          mutedDetail: "100% playable muted via pitch-class keyboard & live chord labeler.",
+          scoreUnit: "depth in metres (max 600m)",
+          howToPlay: [
+            "Six 25-second harmonic constraints — build any chord matching the prompt.",
+            "Once you use a chord quality (like 7#9), it locks out for remaining rounds.",
+            "Simple triads stay shallow (~20m); rare voicings plunge toward 600m."
+          ],
+          labLinks: [{ slug: "upper-structure", label: "Upper-Structure Triads" }]
+        },
+        {
+          id: "stepwise",
+          name: "STEPWISE",
+          status: "planned",
+          url: "https://itailiors.github.io/stepwise/",
+          archiveUrl: "https://itailiors.github.io/stepwise/#archive",
+          cover: "../../assets/covers/stepwise.svg",
+          pitch: "Morph one chord into another, one voice and one step at a time. Beat Par.",
+          archetype: "Deduction / word-ladder",
+          estMinutes: 2,
+          mutedFriendly: "yes",
+          mutedLabel: "Silent OK",
+          mutedDetail: "Pure voice-leading logic on a 12-note track — zero audio required.",
+          scoreUnit: "steps vs Par (golf terms)",
+          howToPlay: [
+            "Start with a 3- or 4-note chord and see today's Target chord & Par.",
+            "Slide exactly ONE voice ±1 or ±2 semitones to form another valid chord.",
+            "Reach the target within Par + 3 moves to hear your ladder play back."
+          ],
+          labLinks: [{ slug: "diminished-pivot", label: "Diminished Pivot" }]
+        },
+        {
+          id: "quartet",
+          name: "QUARTET",
+          status: "planned",
+          url: "https://itailiors.github.io/quartet/",
+          cover: "../../assets/covers/quartet.svg",
+          pitch: "Sixteen sounds, four hidden groups. Hear the connections.",
+          archetype: "Connections-style grouping",
+          estMinutes: 4,
+          mutedFriendly: "no",
+          mutedLabel: "Audio First",
+          mutedDetail: "Designed for headphones/speakers (optional Theory Notes assist exists).",
+          scoreUnit: "mistakes left (0–4)",
+          howToPlay: [
+            "Tap any of the 16 tiles to hear a 1.5-second chord, interval, or rhythm.",
+            "Spot the 4 hidden theory families and submit groups of four.",
+            "Solve with 4 or fewer mistakes to earn the Pure Ear prestige stamp."
+          ],
+          labLinks: [{ slug: "modal-interchange", label: "Modal Colours" }]
+        },
+        {
+          id: "mend",
+          name: "MEND",
+          status: "planned",
+          url: "https://itailiors.github.io/mend/",
+          cover: "../../assets/covers/mend.svg",
+          pitch: "Today's groove has four bugs. Find them, fix them, hear it click.",
+          archetype: "Ear + harmony repair",
+          estMinutes: 4,
+          mutedFriendly: "no",
+          mutedLabel: "Sound On",
+          mutedDetail: "Ear-guided repair across melody, chord, bass, and cadence lanes.",
+          scoreUnit: "bugs fixed / listens used",
+          howToPlay: [
+            "Loop today's 4-bar track containing 4 deliberate musical glitches.",
+            "Expand each broken stem lane (Melody, Chords, Bass, Cadence) to fix it.",
+            "Solve in fewer taps and ace the 1-tap Theory Diagnosis bonus."
+          ],
+          labLinks: [{ slug: "lydian-sharp4", label: "Lydian #4 Lift" }]
+        },
+        {
+          id: "barline",
+          name: "BARLINE",
+          status: "planned",
+          url: "https://itailiors.github.io/barline/",
+          cover: "../../assets/covers/barline.svg",
+          pitch: "Feel the downbeat. Tap Beat 1, then slice the odd meter.",
+          archetype: "Rhythm / meter",
+          estMinutes: 2,
+          mutedFriendly: "partly",
+          mutedLabel: "Muted OK (Partly)",
+          mutedDetail: "Visual pulse ring works muted, though audio rhythm carries the groove.",
+          scoreUnit: "timing accuracy %",
+          howToPlay: [
+            "Listen to 4 escalating musical riffs (3/4, syncopated 4/4, 7/8, polyrhythm).",
+            "Phase A: Tap the center pad on Beat 1 for three consecutive bars.",
+            "Phase B: Slice the circular subdivision ring into its meter grouping (2+2+3)."
+          ],
+          labLinks: []
+        },
+        {
+          id: "tavdle",
+          name: "TAVDLE",
+          status: "planned",
+          url: "https://itailiors.github.io/tavdle/",
+          cover: "../../assets/covers/tavdle.svg",
+          pitch: "TBD — a note/melody daily. Design a placeholder card.",
+          archetype: "TBD",
+          estMinutes: 2,
+          mutedFriendly: "tbd",
+          mutedLabel: "TBD",
+          mutedDetail: "Placeholder slot on the workbench — content & rules coming soon.",
+          scoreUnit: "TBD",
+          howToPlay: [
+            "Daily note and melody deduction puzzle (rules currently in design).",
+            "Tap the Notify bell on this card to highlight it on launch day.",
+            "Zero accounts or emails required — saved strictly on this device."
+          ],
+          labLinks: []
+        },
+        {
+          id: "make-the-changes",
+          name: "Make the Changes",
+          status: "lab",
+          url: "https://itailiors.github.io/reharm-lab/?mode=changes&from=reharm-daily",
+          cover: "../../assets/covers/make-the-changes.svg",
+          pitch: "Hear and play root movements and functions. A practice game inside Reharm Lab.",
+          archetype: "Practice (not a daily)",
+          estMinutes: 5,
+          mutedFriendly: "no",
+          mutedLabel: "Sound On",
+          mutedDetail: "Open practice inside Reharm Lab (MIDI, keyboard, or mouse).",
+          scoreUnit: "points + streak",
+          howToPlay: [
+            "Open Reharm Lab's Changes tab directly from this card.",
+            "Hear where a chord wants to resolve and play the root movement.",
+            "Pure practice — never expires at midnight and never affects daily streaks."
+          ],
+          labLinks: []
+        }
+      ]
+    };
+
+    const REHARM_BADGES = [
+      { id: "tritone-sub", label: "Tritone Sub", img: "../../reference/reharm-game/assets/badges/tritone-sub.svg", unlocked: true },
+      { id: "modal-borrow", label: "Modal Borrow", img: "../../reference/reharm-game/assets/badges/modal-borrow.svg", unlocked: true },
+      { id: "backdoor-dominant", label: "Backdoor Dom", img: "../../reference/reharm-game/assets/badges/backdoor-dominant.svg", unlocked: true },
+      { id: "sharp11-melody", label: "#11 Melody", img: "../../reference/reharm-game/assets/badges/sharp11-melody.svg", unlocked: true },
+      { id: "smooth-bass", label: "Smooth Bass", img: "../../reference/reharm-game/assets/badges/smooth-bass.svg", unlocked: true },
+      { id: "chromatic-mediant", label: "Chrom Mediant", img: "../../reference/reharm-game/assets/badges/chromatic-mediant.svg", unlocked: false },
+      { id: "radio-safe", label: "Radio Safe", img: "../../reference/reharm-game/assets/badges/radio-safe.svg", unlocked: true },
+      { id: "jazz-trench", label: "Deep Reharm", img: "../../reference/reharm-game/assets/badges/jazz-trench.svg", unlocked: false }
+    ];
+
+    /* =========================================================================
+       Prototype State Engine
+       ========================================================================= */
+    const state = {
+      preset: "launch",
+      theme: "system",       // 'system' | 'light' | 'dark'
+      reducedMotion: false,
+      mutedDefault: false,
+      uiSounds: false,
+      storageBlocked: false,
+      offline: false,
+      bannerDismissed: false,
+      hubStreak: 5,
+      longestStreak: 12,
+      cleanSheets: 4,
+      shareFormat: "full",
+      waitlist: { quartet: true },
+      records: {},           // gameId -> { status, scoreLabel, progressLabel, shareText, streak, best, played, tierIcon, labMove }
+      lastStampedId: null,
+      launchTargetId: null
+    };
+
+    function applyPreset(name) {
+      state.preset = name;
+      state.storageBlocked = name === "storage";
+      state.offline = name === "offline";
+      state.bannerDismissed = false;
+      state.lastStampedId = null;
+
+      if (name === "launch" || name === "firstvisit" || name === "storage" || name === "offline") {
+        state.hubStreak = 5;
+        state.records = {
+          reharm: { status: "new", scoreLabel: "Today's Puzzle", streak: 5, best: "96/100", played: 14 }
+        };
+      } else if (name === "midday") {
+        state.hubStreak = 9;
+        state.records = {
+          reharm: {
+            status: "done",
+            scoreLabel: "91/100 · Top 4%",
+            shareText: "🎛️ REHARM: 91/100 · ▲ Top 4% Spice",
+            streak: 9,
+            best: "96/100",
+            played: 15,
+            labMove: { slug: "tritone-sub", label: "Tritone Sub" }
+          },
+          stepwise: {
+            status: "in_progress",
+            scoreLabel: "Step 2/4 · Par 3",
+            progressLabel: "Step 2/4",
+            streak: 4,
+            best: "Par -1",
+            played: 9
+          },
+          "chord-trench": {
+            status: "done",
+            scoreLabel: "468m / 600m",
+            shareText: "🌊 CHORD TRENCH: 468m/600m",
+            streak: 6,
+            best: "542m",
+            played: 11
+          },
+          quartet: { status: "new", scoreLabel: "Today's Puzzle", streak: 3, best: "0 mistakes", played: 7 },
+          mend: {
+            status: "in_progress",
+            scoreLabel: "2/4 bugs fixed",
+            progressLabel: "2/4 fixed",
+            streak: 2,
+            best: "4/4 taps",
+            played: 5
+          },
+          barline: {
+            status: "done",
+            scoreLabel: "±11ms pocket",
+            shareText: "🥁 BARLINE: ±11ms pocket",
+            streak: 8,
+            best: "±7ms",
+            played: 12
+          },
+          tavdle: { status: "new", scoreLabel: "Today's Puzzle", streak: 1, best: "3/6", played: 4 }
+        };
+      } else if (name === "alldone") {
+        state.hubStreak = 14;
+        state.records = {
+          reharm: { status: "done", scoreLabel: "94/100 · Top 2%", shareText: "🎛️ REHARM: 94/100 ▲", streak: 14, best: "96/100", played: 21, labMove: { slug: "backdoor-dominant", label: "Backdoor Dominant" } },
+          "chord-trench": { status: "done", scoreLabel: "512m / 600m", shareText: "🌊 CHORD TRENCH: 512m/600m", streak: 10, best: "542m", played: 14 },
+          stepwise: { status: "done", scoreLabel: "2 moves (Eagle)", shareText: "🪜 STEPWISE: Par -1 (Eagle)", streak: 12, best: "Par -1", played: 18, labMove: { slug: "diminished-pivot", label: "Diminished Pivot" } },
+          quartet: { status: "done", scoreLabel: "0 mistakes · Pure Ear", shareText: "🎼 QUARTET: 0 mistakes (🎧 Pure Ear)", streak: 7, best: "0 mistakes", played: 11 },
+          mend: { status: "done", scoreLabel: "4/4 restored · 4★", shareText: "🩺 MEND: 4/4 restored", streak: 9, best: "4/4 taps", played: 12, labMove: { slug: "lydian-sharp4", label: "Lydian #4 Lift" } },
+          barline: { status: "done", scoreLabel: "±9ms pocket", shareText: "🥁 BARLINE: ±9ms pocket", streak: 11, best: "±7ms", played: 16 },
+          tavdle: { status: "done", scoreLabel: "3/6 guesses", shareText: "🎵 TAVDLE: 3/6", streak: 4, best: "2/6", played: 8 }
+        };
+      }
+
+      document.querySelectorAll(".proto-btn[data-preset]").forEach(btn => {
+        btn.setAttribute("aria-pressed", String(btn.dataset.preset === name));
+      });
+
+      renderBoard();
+      if (name === "firstvisit") openIntroModal();
+      else closeSheet();
+    }
+
+    function getActiveGames() {
+      const isFull = state.preset === "midday" || state.preset === "alldone";
+      return CATALOG.games.map(g => {
+        if (g.status === "lab") return { ...g, effectiveStatus: "lab" };
+        if (isFull || g.status === "live") {
+          return { ...g, effectiveStatus: "live" };
+        }
+        return { ...g, effectiveStatus: "planned" };
+      });
+    }
+
+    function getLiveGames(list) {
+      return list.filter(g => g.effectiveStatus === "live");
+    }
+
+    function getRecord(gameId) {
+      return state.records[gameId] || { status: "new", scoreLabel: "Today's Puzzle", streak: 0, best: "—", played: 0 };
+    }
+
+    /* =========================================================================
+       Rendering
+       ========================================================================= */
+    function renderBoard() {
+      const allGames = getActiveGames();
+      const live = getLiveGames(allGames);
+      const planned = allGames.filter(g => g.effectiveStatus === "planned");
+      const labGame = allGames.find(g => g.effectiveStatus === "lab");
+
+      const doneList = live.filter(g => getRecord(g.id).status === "done");
+      const playedCount = doneList.length;
+      const totalLive = live.length;
+      const isAllDone = totalLive > 0 && playedCount === totalLive;
+      const isFullRoster = totalLive > 1;
+
+      const shell = document.getElementById("app-shell");
+      shell.dataset.roster = isFullRoster ? "full" : "launch";
+      shell.dataset.allDone = String(isAllDone);
+
+      // System banner (Storage Blocked or Offline)
+      const banner = document.getElementById("system-banner");
+      const bannerText = document.getElementById("banner-text");
+      const bannerIcon = document.getElementById("banner-icon");
+      if (!state.bannerDismissed && state.storageBlocked) {
+        banner.dataset.visible = "true";
+        bannerIcon.innerHTML = `<use href="#icon-shield-alert"/>`;
+        bannerText.textContent = "Private / Storage Blocked — All games still play, but streaks and scores won't save after closing this tab.";
+      } else if (!state.bannerDismissed && state.offline) {
+        banner.dataset.visible = "true";
+        bannerIcon.innerHTML = `<use href="#icon-wifi-off"/>`;
+        bannerText.textContent = "You're offline — Cached games and today's sheet remain readable; new games need a connection to open.";
+      } else {
+        banner.dataset.visible = "false";
+      }
+
+      // Ritual header
+      document.getElementById("ritual-title").textContent = isAllDone
+        ? `Today · ${playedCount} of ${totalLive} · Clean Sheet ✓`
+        : `Today · ${playedCount} of ${totalLive} played`;
+      const clockSpan = document.getElementById("midnight-clock")?.textContent || "04:12:09";
+      document.getElementById("ritual-sub").innerHTML = `${isAllDone ? "All done for today" : "Pick a puzzle"} · Resets in <span class="mono" id="midnight-clock">${clockSpan}</span>`;
+
+      document.getElementById("streak-count").textContent = `${state.hubStreak}d`;
+
+      const shareBtn = document.getElementById("btn-open-share");
+      shareBtn.disabled = playedCount === 0;
+      shareBtn.title = playedCount === 0 ? "Finish 1 puzzle to unlock today's share card" : "Open today's combined share card";
+
+      // Segmented meter
+      const meter = document.getElementById("meter-track");
+      meter.setAttribute("aria-valuemax", String(totalLive));
+      meter.setAttribute("aria-valuenow", String(playedCount));
+      const segTotal = isFullRoster ? totalLive : 7;
+      meter.style.gridTemplateColumns = `repeat(${segTotal}, 1fr)`;
+      meter.innerHTML = "";
+      if (isFullRoster) {
+        live.forEach(g => {
+          const rec = getRecord(g.id);
+          const seg = document.createElement("div");
+          seg.className = "meter-seg";
+          seg.dataset.segState = rec.status === "done" ? "done" : rec.status === "in_progress" ? "in_progress" : "new";
+          meter.appendChild(seg);
+        });
+      } else {
+        // Launch: 1 live segment + 6 upcoming ghost ticks
+        const liveRec = getRecord(live[0].id);
+        const firstSeg = document.createElement("div");
+        firstSeg.className = "meter-seg";
+        firstSeg.dataset.segState = liveRec.status === "done" ? "done" : liveRec.status === "in_progress" ? "in_progress" : "new";
+        meter.appendChild(firstSeg);
+        for (let i = 0; i < 6; i++) {
+          const gSeg = document.createElement("div");
+          gSeg.className = "meter-seg";
+          gSeg.dataset.segState = "ghost";
+          meter.appendChild(gSeg);
+        }
+      }
+
+      // All-done celebration banner
+      const cel = document.getElementById("celebration-card");
+      cel.dataset.visible = String(isAllDone);
+      if (isAllDone) {
+        cel.classList.add("is-celebrating");
+        document.getElementById("celebration-title").textContent = totalLive === 1
+          ? "Today's sheet is complete!"
+          : `All ${totalLive} puzzles played today!`;
+        document.getElementById("celebration-meta").textContent = `${state.hubStreak}-day hub streak · Next sheet drops at local midnight.`;
+        spawnConfetti();
+      } else {
+        cel.classList.remove("is-celebrating");
+      }
+
+      // Build sections
+      const container = document.getElementById("board-sections");
+      container.innerHTML = "";
+
+      if (!isFullRoster) {
+        // Launch layout: Lead Puzzle + Lab Practice side by side on desktop, then 6 Coming Soon
+        const head = makeSectionHead("Today's Lead Puzzle", "1 LIVE NOW");
+        container.appendChild(head);
+
+        const launchGrid = document.createElement("div");
+        launchGrid.className = "launch-grid";
+        launchGrid.appendChild(renderGameCard(live[0], 0));
+        if (labGame) launchGrid.appendChild(renderGameCard(labGame, 1));
+        container.appendChild(launchGrid);
+
+        const notifiedCount = Object.values(state.waitlist).filter(Boolean).length;
+        container.appendChild(makeSectionHead(`On the Workbench (${planned.length} Upcoming)`, `${notifiedCount} NOTIFIED`));
+        const soonGrid = document.createElement("div");
+        soonGrid.className = "soon-grid";
+        planned.forEach((g, idx) => soonGrid.appendChild(renderGameCard(g, idx + 2)));
+        container.appendChild(soonGrid);
+      } else {
+        // Full 7+ live layout: sorted In Progress -> New -> Done
+        const rank = { in_progress: 0, new: 1, done: 2 };
+        const sortedLive = [...live].sort((a, b) => rank[getRecord(a.id).status] - rank[getRecord(b.id).status]);
+
+        container.appendChild(makeSectionHead("Today's Sheet", `${totalLive - playedCount} REMAINING`));
+        const liveGrid = document.createElement("div");
+        liveGrid.className = "live-grid";
+        sortedLive.forEach((g, idx) => liveGrid.appendChild(renderGameCard(g, idx)));
+        container.appendChild(liveGrid);
+
+        if (labGame) {
+          container.appendChild(makeSectionHead("Open Practice Inside Reharm Lab", "DOES NOT AFFECT STREAK"));
+          const labWrap = document.createElement("div");
+          labWrap.className = "live-grid";
+          labWrap.style.gridTemplateColumns = "1fr";
+          labWrap.appendChild(renderGameCard(labGame, sortedLive.length));
+          container.appendChild(labWrap);
+        }
+      }
+    }
+
+    function makeSectionHead(title, kicker) {
+      const div = document.createElement("div");
+      div.className = "section-head";
+      div.innerHTML = `<h2 class="section-title">${title}</h2><span class="section-kicker">${kicker}</span>`;
+      return div;
+    }
+
+    function renderGameCard(game, idx) {
+      const eff = game.effectiveStatus;
+      const rec = getRecord(game.id);
+      const playState = eff === "live" ? rec.status : eff;
+
+      const card = document.createElement("article");
+      card.className = "game-card";
+      card.dataset.gameId = game.id;
+      card.dataset.status = playState;
+      card.style.setProperty("--card-index", String(idx));
+      if (state.lastStampedId === game.id) card.dataset.stamping = "true";
+
+      // Cover window button (opens Detail Sheet)
+      const coverBtn = document.createElement("button");
+      coverBtn.type = "button";
+      coverBtn.className = "cover-btn";
+      coverBtn.setAttribute("aria-label", `Inspect ${game.name} details`);
+      coverBtn.addEventListener("click", () => openGameDetail(game.id));
+
+      const coverWin = document.createElement("div");
+      coverWin.className = "cover-window";
+      const img = document.createElement("img");
+      img.className = "cover-img";
+      img.src = game.cover;
+      img.alt = `${game.name} game preview`;
+      coverWin.appendChild(img);
+
+      if (eff === "planned") {
+        const stamp = document.createElement("img");
+        stamp.className = "coming-stamp-overlay";
+        stamp.src = "../../assets/covers/coming-soon-stamp.svg";
+        stamp.alt = "Coming soon";
+        coverWin.appendChild(stamp);
+      } else if (playState === "done") {
+        const stamp = document.createElement("div");
+        stamp.className = "stamp-done";
+        stamp.textContent = `DONE · ${rec.scoreLabel.split("·")[0].trim()} ✓`;
+        coverWin.appendChild(stamp);
+      }
+      coverBtn.appendChild(coverWin);
+      card.appendChild(coverBtn);
+
+      // Header + title
+      const head = document.createElement("div");
+      head.className = "card-header";
+      const titleBtn = document.createElement("button");
+      titleBtn.type = "button";
+      titleBtn.className = "card-title-btn";
+      titleBtn.textContent = game.name;
+      titleBtn.addEventListener("click", () => openGameDetail(game.id));
+      head.appendChild(titleBtn);
+
+      const statusBadge = document.createElement("span");
+      if (eff === "planned") {
+        statusBadge.className = "pill pill-soon";
+        statusBadge.textContent = "Planned";
+      } else if (eff === "lab") {
+        statusBadge.className = "pill pill-lab";
+        statusBadge.textContent = "Practice";
+      } else if (playState === "done") {
+        statusBadge.className = "pill pill-done";
+        statusBadge.innerHTML = `<svg class="ico-sm"><use href="#icon-check"/></svg><span>${rec.scoreLabel}</span>`;
+      } else if (playState === "in_progress") {
+        statusBadge.className = "pill pill-progress";
+        statusBadge.textContent = `◐ ${rec.progressLabel || "In Progress"}`;
+      } else {
+        statusBadge.className = "pill pill-new";
+        statusBadge.textContent = "● New Today";
+      }
+      head.appendChild(statusBadge);
+      card.appendChild(head);
+
+      // Meta badges (duration + muted-friendly)
+      const badges = document.createElement("div");
+      badges.className = "badge-row";
+      const timePill = `<span class="pill pill-neutral"><svg class="ico-sm"><use href="#icon-clock"/></svg>~${game.estMinutes} min</span>`;
+      let muteClass = "pill-neutral";
+      let muteIcon = "info";
+      if (game.mutedFriendly === "yes" || game.mutedFriendly === "partly") {
+        muteClass = "pill-muted-ok";
+        muteIcon = "check";
+      } else if (game.mutedFriendly === "no") {
+        muteClass = "pill-audio";
+        muteIcon = "headphones";
+      }
+      const mutePill = `<span class="pill ${muteClass}"><svg class="ico-sm"><use href="#icon-${muteIcon}"/></svg>${game.mutedLabel}</span>`;
+      badges.innerHTML = timePill + mutePill;
+      card.appendChild(badges);
+
+      // Pitch
+      const pitch = document.createElement("p");
+      pitch.className = "card-pitch";
+      pitch.textContent = game.pitch;
+      card.appendChild(pitch);
+
+      // Action row
+      const actions = document.createElement("div");
+      actions.className = "card-actions";
+
+      if (eff === "live") {
+        const playBtn = document.createElement("button");
+        playBtn.type = "button";
+        playBtn.className = playState === "done" ? "btn-secondary" : "btn-primary";
+        if (playState === "done") {
+          playBtn.innerHTML = `<svg class="ico-sm"><use href="#icon-play"/></svg><span>Hear &amp; Compare</span>`;
+        } else if (playState === "in_progress") {
+          playBtn.innerHTML = `<svg class="ico-sm"><use href="#icon-play"/></svg><span>Resume</span>`;
+        } else {
+          playBtn.innerHTML = `<svg class="ico-sm"><use href="#icon-play"/></svg><span>Play ${game.name}</span>`;
+        }
+        playBtn.addEventListener("click", () => triggerLaunch(game.id));
+        actions.appendChild(playBtn);
+
+        const detailBtn = document.createElement("button");
+        detailBtn.type = "button";
+        detailBtn.className = "btn-icon-only";
+        detailBtn.setAttribute("aria-label", `${game.name} rules & stats`);
+        detailBtn.innerHTML = `<svg class="ico"><use href="#icon-info"/></svg>`;
+        detailBtn.addEventListener("click", () => openGameDetail(game.id));
+        actions.appendChild(detailBtn);
+      } else if (eff === "planned") {
+        const isNotified = Boolean(state.waitlist[game.id]);
+        const bellBtn = document.createElement("button");
+        bellBtn.type = "button";
+        bellBtn.className = "btn-secondary bell-btn";
+        bellBtn.setAttribute("aria-pressed", String(isNotified));
+        bellBtn.innerHTML = isNotified
+          ? `<svg class="ico-sm"><use href="#icon-bell-check"/></svg><span>Notified ✓</span>`
+          : `<svg class="ico-sm"><use href="#icon-bell"/></svg><span>Notify me</span>`;
+        bellBtn.addEventListener("click", () => toggleBell(game.id));
+        actions.appendChild(bellBtn);
+
+        const previewBtn = document.createElement("button");
+        previewBtn.type = "button";
+        previewBtn.className = "btn-icon-only";
+        previewBtn.setAttribute("aria-label", `Preview ${game.name}`);
+        previewBtn.innerHTML = `<svg class="ico"><use href="#icon-info"/></svg>`;
+        previewBtn.addEventListener("click", () => openGameDetail(game.id));
+        actions.appendChild(previewBtn);
+      } else if (eff === "lab") {
+        const labBtn = document.createElement("button");
+        labBtn.type = "button";
+        labBtn.className = "btn-secondary";
+        labBtn.innerHTML = `<svg class="ico-sm"><use href="#icon-external-link"/></svg><span>Open in Reharm Lab</span>`;
+        labBtn.addEventListener("click", () => triggerLaunch(game.id));
+        actions.appendChild(labBtn);
+      }
+
+      card.appendChild(actions);
+      return card;
+    }
+
+    function spawnConfetti() {
+      const box = document.getElementById("confetti-burst");
+      box.innerHTML = "";
+      const colors = ["#5B85C2", "#E3B23C", "#B9532F", "#7E9C6B"];
+      const coords = [
+        [14, 18, -28, -18], [26, 40, -18, 22], [44, 12, 16, -24], [58, 48, 26, 20],
+        [74, 20, -22, -26], [85, 34, 24, -18], [92, 58, 20, 24], [34, 62, -24, 18]
+      ];
+      coords.forEach(([lx, ty, dx, dy], i) => {
+        const dot = document.createElement("span");
+        dot.className = "confetti-dot";
+        dot.style.left = `${lx}%`;
+        dot.style.top = `${ty}%`;
+        dot.style.background = colors[i % colors.length];
+        dot.style.setProperty("--dx", `${dx}px`);
+        dot.style.setProperty("--dy", `${dy}px`);
+        box.appendChild(dot);
+      });
+    }
+
+    /* =========================================================================
+       Dialogs & Sheets
+       ========================================================================= */
+    const backdrop = document.getElementById("modal-backdrop");
+    const sheetDialog = document.getElementById("sheet-dialog");
+    const sheetHeading = document.getElementById("sheet-heading");
+    const sheetBody = document.getElementById("sheet-body");
+
+    function openSheet(title, htmlOrBuilder, wide = false) {
+      sheetDialog.classList.toggle("sheet-wide", wide);
+      sheetHeading.textContent = title;
+      sheetBody.innerHTML = "";
+      if (typeof htmlOrBuilder === "string") sheetBody.innerHTML = htmlOrBuilder;
+      else htmlOrBuilder(sheetBody);
+      backdrop.dataset.open = "true";
+      sheetDialog.focus();
+    }
+
+    function closeSheet() {
+      backdrop.dataset.open = "false";
+    }
+
+    function openGameDetail(gameId) {
+      const game = getActiveGames().find(g => g.id === gameId);
+      if (!game) return;
+      const eff = game.effectiveStatus;
+      const rec = getRecord(game.id);
+
+      openSheet(`${game.name} ${eff === "live" ? `#${CATALOG.hub.puzzleNo}` : ""}`, (body) => {
+        const cov = document.createElement("div");
+        cov.className = "cover-window";
+        cov.innerHTML = `<img class="cover-img" src="${game.cover}" alt="${game.name}" />`;
+        body.appendChild(cov);
+
+        const facts = document.createElement("div");
+        facts.className = "badge-row";
+        facts.innerHTML = `
+          <span class="pill pill-neutral"><svg class="ico-sm"><use href="#icon-clock"/></svg>~${game.estMinutes} min</span>
+          <span class="pill pill-muted-ok">${game.mutedLabel}</span>
+          <span class="pill pill-neutral">${game.scoreUnit}</span>
+        `;
+        body.appendChild(facts);
+
+        const muteNote = document.createElement("p");
+        muteNote.style.cssText = "margin:0;font-size:12.5px;color:var(--text-muted);";
+        muteNote.textContent = game.mutedDetail;
+        body.appendChild(muteNote);
+
+        const rulesHead = document.createElement("div");
+        rulesHead.innerHTML = `<strong style="font-family:var(--font-display);font-size:17px;">How to Play</strong>`;
+        body.appendChild(rulesHead);
+
+        const list = document.createElement("ol");
+        list.className = "how-list";
+        game.howToPlay.forEach((step, i) => {
+          list.innerHTML += `<li><span class="how-num">${i + 1}</span><span>${step}</span></li>`;
+        });
+        body.appendChild(list);
+
+        if (eff === "live") {
+          const stats = document.createElement("div");
+          stats.className = "kpi-grid";
+          stats.style.gridTemplateColumns = "repeat(3, 1fr)";
+          stats.innerHTML = `
+            <div class="kpi-tile"><div class="kpi-val">${rec.played}</div><div class="kpi-lbl">Played</div></div>
+            <div class="kpi-tile"><div class="kpi-val">${rec.streak}d</div><div class="kpi-lbl">Streak</div></div>
+            <div class="kpi-tile"><div class="kpi-val" style="font-size:16px;">${rec.best}</div><div class="kpi-lbl">Best</div></div>
+          `;
+          body.appendChild(stats);
+
+          if (rec.status === "done" && (rec.labMove || (game.labLinks && game.labLinks[0]))) {
+            const mv = rec.labMove || game.labLinks[0];
+            const chip = document.createElement("a");
+            chip.className = "daily-lab-chip";
+            chip.href = `https://itailiors.github.io/reharm-lab/?move=${mv.slug}&from=${game.id}`;
+            chip.target = "_blank";
+            chip.rel = "noopener";
+            chip.innerHTML = `
+              <div style="display:flex;align-items:center;gap:10px;">
+                <span class="daily-lab-chip-mark">RL</span>
+                <div>
+                  <div class="daily-lab-chip-title">Learn ${mv.label} in Reharm Lab</div>
+                  <div class="daily-lab-chip-sub">Practice this move across 12 keys</div>
+                </div>
+              </div>
+              <span class="daily-lab-chip-go">Open Lab ↗</span>
+            `;
+            body.appendChild(chip);
+          }
+
+          const footer = document.createElement("div");
+          footer.className = "card-actions";
+          const playBtn = document.createElement("button");
+          playBtn.type = "button";
+          playBtn.className = "btn-primary";
+          playBtn.innerHTML = `<svg class="ico-sm"><use href="#icon-play"/></svg><span>${rec.status === "done" ? "Open Mix & Compare" : rec.status === "in_progress" ? "Resume Puzzle" : "Play Today's Puzzle"}</span>`;
+          playBtn.addEventListener("click", () => {
+            closeSheet();
+            triggerLaunch(game.id);
+          });
+          footer.appendChild(playBtn);
+
+          if (game.archiveUrl) {
+            const archBtn = document.createElement("button");
+            archBtn.type = "button";
+            archBtn.className = "btn-secondary";
+            archBtn.style.flex = "0 0 auto";
+            archBtn.innerHTML = `<svg class="ico-sm"><use href="#icon-calendar"/></svg><span>Archive</span>`;
+            archBtn.addEventListener("click", () => showToast(`Archive URL: ${game.archiveUrl}`));
+            footer.appendChild(archBtn);
+          }
+          body.appendChild(footer);
+        } else if (eff === "planned") {
+          const note = document.createElement("div");
+          note.style.cssText = "padding:10px 12px;border-radius:10px;background:var(--bg-elevated);border:1px dashed var(--border-strong);font-size:12.5px;color:var(--text-secondary);";
+          note.textContent = "In active development — no email or signup needed. Toggle the local bell to highlight this card on launch day.";
+          body.appendChild(note);
+
+          const isNotified = Boolean(state.waitlist[game.id]);
+          const bellBtn = document.createElement("button");
+          bellBtn.type = "button";
+          bellBtn.className = isNotified ? "btn-secondary" : "btn-primary";
+          bellBtn.innerHTML = isNotified
+            ? `<svg class="ico-sm"><use href="#icon-bell-check"/></svg><span>Saved on This Device ✓</span>`
+            : `<svg class="ico-sm"><use href="#icon-bell"/></svg><span>Notify Me on This Device</span>`;
+          bellBtn.addEventListener("click", () => {
+            toggleBell(game.id);
+            openGameDetail(game.id);
+          });
+          body.appendChild(bellBtn);
+        } else {
+          const goLab = document.createElement("button");
+          goLab.type = "button";
+          goLab.className = "btn-primary";
+          goLab.innerHTML = `<svg class="ico-sm"><use href="#icon-external-link"/></svg><span>Open Make the Changes in Reharm Lab</span>`;
+          goLab.addEventListener("click", () => {
+            closeSheet();
+            triggerLaunch(game.id);
+          });
+          body.appendChild(goLab);
+        }
+      });
+    }
+
+    function buildShareStrings() {
+      const live = getLiveGames(getActiveGames());
+      const done = live.filter(g => getRecord(g.id).status === "done");
+      const no = CATALOG.hub.puzzleNo;
+      const isClean = done.length === live.length;
+      const header = `🎹 Reharm Daily · #${no} (${done.length}/${live.length}${isClean ? " ✓ CLEAN SHEET" : ""})`;
+      const lines = done.map(g => getRecord(g.id).shareText || `${g.name}: ${getRecord(g.id).scoreLabel}`);
+      const footer = `🔥 Streak: ${state.hubStreak}d\nPlay today: ${CATALOG.hub.plannedUrl}`;
+      const fullText = [header, ...lines, footer].join("\n");
+
+      const compactParts = done.map(g => `${g.name} ${getRecord(g.id).scoreLabel.split("·")[0].trim()}`);
+      const compactText = `🎹 Reharm Daily #${no} (${done.length}/${live.length}) — ${compactParts.join(" · ")} · 🔥 ${state.hubStreak}d · itailiors.github.io/reharm-daily/`;
+      return { fullText, compactText };
+    }
+
+    function openShareModal() {
+      const { fullText, compactText } = buildShareStrings();
+      openSheet("Share Today's Sheet", (body) => {
+        const seg = document.createElement("div");
+        seg.className = "segmented";
+        seg.innerHTML = `
+          <button class="seg-btn" type="button" data-fmt="full" aria-pressed="${state.shareFormat === "full"}">Full Sheet Card</button>
+          <button class="seg-btn" type="button" data-fmt="compact" aria-pressed="${state.shareFormat === "compact"}">Compact 1-Liner</button>
+        `;
+        body.appendChild(seg);
+
+        const pre = document.createElement("pre");
+        pre.className = "share-well";
+        pre.textContent = state.shareFormat === "full" ? fullText : compactText;
+        body.appendChild(pre);
+
+        seg.querySelectorAll(".seg-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            state.shareFormat = btn.dataset.fmt;
+            seg.querySelectorAll(".seg-btn").forEach(b => b.setAttribute("aria-pressed", String(b === btn)));
+            pre.textContent = state.shareFormat === "full" ? fullText : compactText;
+          });
+        });
+
+        const copyBtn = document.createElement("button");
+        copyBtn.type = "button";
+        copyBtn.className = "btn-primary";
+        copyBtn.innerHTML = `<svg class="ico-sm"><use href="#icon-copy"/></svg><span>Copy Share Card</span>`;
+        copyBtn.addEventListener("click", async () => {
+          const text = state.shareFormat === "full" ? fullText : compactText;
+          try {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              await navigator.clipboard.writeText(text);
+            }
+          } catch {}
+          copyBtn.style.background = "var(--status-done-fg)";
+          copyBtn.style.color = "var(--bg-surface)";
+          copyBtn.innerHTML = `<svg class="ico-sm"><use href="#icon-check"/></svg><span>✓ Copied to Clipboard!</span>`;
+          showToast("Spoiler-free share card copied!");
+          setTimeout(() => {
+            copyBtn.style.background = "";
+            copyBtn.style.color = "";
+            copyBtn.innerHTML = `<svg class="ico-sm"><use href="#icon-copy"/></svg><span>Copy Share Card</span>`;
+          }, 2000);
+        });
+        body.appendChild(copyBtn);
+
+        const note = document.createElement("p");
+        note.style.cssText = "margin:0;text-align:center;font-size:12px;color:var(--text-muted);";
+        note.textContent = "Zero chord or answer spoilers included — safe for group chats.";
+        body.appendChild(note);
+      });
+    }
+
+    function openStatsDrawer() {
+      const live = getLiveGames(getActiveGames());
+      openSheet("Daily Progress & Badges", (body) => {
+        const kpis = document.createElement("div");
+        kpis.className = "kpi-grid";
+        kpis.innerHTML = `
+          <div class="kpi-tile"><div class="kpi-val">${state.hubStreak}d</div><div class="kpi-lbl">Hub Streak</div></div>
+          <div class="kpi-tile"><div class="kpi-val">${state.longestStreak}d</div><div class="kpi-lbl">Best Streak</div></div>
+          <div class="kpi-tile"><div class="kpi-val">38</div><div class="kpi-lbl">Total Played</div></div>
+          <div class="kpi-tile"><div class="kpi-val">${state.cleanSheets}</div><div class="kpi-lbl">Clean Sheets</div></div>
+        `;
+        body.appendChild(kpis);
+
+        const weekHead = document.createElement("div");
+        weekHead.innerHTML = `<strong style="font-family:var(--font-display);font-size:17px;">Last 7 Days</strong>`;
+        body.appendChild(weekHead);
+
+        const week = document.createElement("div");
+        week.className = "week-row";
+        const days = [
+          ["Thu", true, false], ["Fri", true, true], ["Sat", true, false],
+          ["Sun", true, true], ["Mon", true, false], ["Tue", true, true],
+          ["Today", live.some(g => getRecord(g.id).status === "done"), live.every(g => getRecord(g.id).status === "done")]
+        ];
+        days.forEach(([lbl, hit, clean]) => {
+          week.innerHTML += `<div class="day-cell ${hit ? "is-hit" : ""} ${clean ? "is-clean" : ""}"><div>${lbl}</div><div>${hit ? "✓" : "·"}</div></div>`;
+        });
+        body.appendChild(week);
+
+        const ledgerHead = document.createElement("div");
+        ledgerHead.innerHTML = `<strong style="font-family:var(--font-display);font-size:17px;">REHARM Trophy Shelf</strong> <span style="font-size:12px;color:var(--text-muted);">(synced from reharm:v1:history)</span>`;
+        body.appendChild(ledgerHead);
+
+        const shelf = document.createElement("div");
+        shelf.className = "badge-shelf";
+        REHARM_BADGES.forEach(b => {
+          shelf.innerHTML += `<div class="trophy-pin ${b.unlocked ? "" : "is-locked"}"><img src="${b.img}" alt="${b.label}" /><span>${b.label}</span></div>`;
+        });
+        body.appendChild(shelf);
+      });
+    }
+
+    function openSettingsSheet() {
+      openSheet("Sheet Settings", (body) => {
+        const themeHead = document.createElement("div");
+        themeHead.innerHTML = `<div class="setting-title" style="margin-bottom:6px;">Theme</div>`;
+        const seg = document.createElement("div");
+        seg.className = "segmented";
+        seg.innerHTML = `
+          <button class="seg-btn" type="button" data-th="system" aria-pressed="${state.theme === "system"}">System</button>
+          <button class="seg-btn" type="button" data-th="light" aria-pressed="${state.theme === "light"}">Light (Parchment)</button>
+          <button class="seg-btn" type="button" data-th="dark" aria-pressed="${state.theme === "dark"}">Dark (Northgate)</button>
+        `;
+        seg.querySelectorAll(".seg-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            setTheme(btn.dataset.th);
+            openSettingsSheet();
+          });
+        });
+        themeHead.appendChild(seg);
+        body.appendChild(themeHead);
+
+        body.appendChild(makeToggleRow(
+          "Reduced Motion",
+          "Disables stamp & celebration animations (auto follows OS).",
+          state.reducedMotion,
+          (v) => {
+            state.reducedMotion = v;
+            document.documentElement.dataset.reducedMotion = String(v);
+            document.getElementById("btn-toggle-motion").setAttribute("aria-pressed", String(v));
+            document.getElementById("btn-toggle-motion").textContent = v ? "Motion: Off" : "Motion: On";
+          }
+        ));
+
+        body.appendChild(makeToggleRow(
+          "Muted Default",
+          "Prefer silent commutes — spotlights Muted-Friendly puzzles.",
+          state.mutedDefault,
+          (v) => { state.mutedDefault = v; showToast(v ? "Muted preference saved" : "Audio default active"); }
+        ));
+
+        body.appendChild(makeToggleRow(
+          "Hub Micro-Sounds",
+          "Subtle soft chimes on Done stamps and bells (off when muted).",
+          state.uiSounds,
+          (v) => { state.uiSounds = v; }
+        ));
+
+        const resetRow = document.createElement("div");
+        resetRow.style.cssText = "padding-top:8px;border-top:1px solid var(--border-subtle);display:flex;justify-content:space-between;align-items:center;gap:10px;";
+        resetRow.innerHTML = `<span style="font-size:12px;color:var(--text-muted);">Stored locally on this device · 0 server data</span>`;
+        const resetBtn = document.createElement("button");
+        resetBtn.type = "button";
+        resetBtn.className = "btn-secondary";
+        resetBtn.textContent = "Reset Hub History";
+        let armed = false;
+        resetBtn.addEventListener("click", () => {
+          if (!armed) {
+            armed = true;
+            resetBtn.textContent = "Confirm Reset?";
+            resetBtn.style.borderColor = "var(--accent-pen)";
+            resetBtn.style.color = "var(--accent-pen)";
+          } else {
+            applyPreset("launch");
+            showToast("Prototype history reset to Launch state.");
+          }
+        });
+        resetRow.appendChild(resetBtn);
+        body.appendChild(resetRow);
+      });
+    }
+
+    function makeToggleRow(title, desc, value, onChange) {
+      const row = document.createElement("div");
+      row.className = "setting-row";
+      row.innerHTML = `<div><div class="setting-title">${title}</div><div class="setting-desc">${desc}</div></div>`;
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "toggle-pill";
+      btn.setAttribute("aria-pressed", String(value));
+      btn.textContent = value ? "On" : "Off";
+      btn.addEventListener("click", () => {
+        const next = btn.getAttribute("aria-pressed") !== "true";
+        btn.setAttribute("aria-pressed", String(next));
+        btn.textContent = next ? "On" : "Off";
+        onChange(next);
+      });
+      row.appendChild(btn);
+      return row;
+    }
+
+    function openIntroModal() {
+      openSheet("Welcome to Reharm Daily", (body) => {
+        const sub = document.createElement("p");
+        sub.style.cssText = "margin:0;font-size:14px;color:var(--text-secondary);";
+        sub.textContent = "One daily sheet for music puzzles you can actually hear — and play. Zero accounts, zero ads.";
+        body.appendChild(sub);
+
+        const list = document.createElement("ol");
+        list.className = "how-list";
+        list.innerHTML = `
+          <li><span class="how-num">1</span><span><strong>Play at your pace:</strong> REHARM is live today with 6 more musical puzzles joining the sheet.</span></li>
+          <li><span class="how-num">2</span><span><strong>Muted-friendly labels:</strong> Every card tells you upfront if you can solve it silently on a train.</span></li>
+          <li><span class="how-num">3</span><span><strong>Linked with Reharm Lab:</strong> Keep streaks in your browser and tap any move to practice it in the Lab.</span></li>
+        `;
+        body.appendChild(list);
+
+        const ctas = document.createElement("div");
+        ctas.style.cssText = "display:flex;flex-direction:column;gap:8px;";
+        const playNow = document.createElement("button");
+        playNow.type = "button";
+        playNow.className = "btn-primary";
+        playNow.innerHTML = `<svg class="ico-sm"><use href="#icon-play"/></svg><span>Jump Straight to REHARM #42 →</span>`;
+        playNow.addEventListener("click", () => {
+          closeSheet();
+          triggerLaunch("reharm");
+        });
+        const openHub = document.createElement("button");
+        openHub.type = "button";
+        openHub.className = "btn-secondary";
+        openHub.textContent = "Open Today's Sheet";
+        openHub.addEventListener("click", closeSheet);
+        ctas.appendChild(playNow);
+        ctas.appendChild(openHub);
+        body.appendChild(ctas);
+      });
+    }
+
+    function openBridgeShowcase() {
+      openSheet("Lab ↔ Hub ↔ Game Bridge Showcase", (body) => {
+        const labBox = document.createElement("div");
+        labBox.style.cssText = "background:var(--bg-elevated);border:1.5px solid var(--border-ink);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;";
+        labBox.innerHTML = `
+          <div style="font-family:var(--font-display);font-size:17px;font-weight:700;">1. Reharm Lab Toolbar Entry (Rough.js Ink Pill)</div>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">
+            <img src="../../assets/lab-entry/lab-daily-pill.svg" alt="Daily 1 unplayed" style="height:36px;" />
+            <img src="../../assets/lab-entry/lab-daily-pill-done.svg" alt="Daily all done" style="height:36px;" />
+            <img src="../../assets/lab-entry/lab-daily-pill-northgate.svg" alt="Daily Northgate dark" style="height:36px;" />
+            <img src="../../assets/lab-entry/lab-daily-sidebar-icon.svg" alt="Daily desktop rail" style="height:44px;" />
+          </div>
+        `;
+        body.appendChild(labBox);
+
+        const title2 = document.createElement("div");
+        title2.innerHTML = `<div style="font-family:var(--font-display);font-size:17px;font-weight:700;">2. Drop-In Game Strip + Next-Game Nudge (Skin-Inherited)</div>`;
+        body.appendChild(title2);
+
+        const grid = document.createElement("div");
+        grid.className = "bridge-grid";
+        grid.innerHTML = `
+          <div class="bridge-host is-reharm">
+            <nav class="daily-bridge-bar">
+              <span class="daily-back-link">← Reharm Daily</span>
+              <span class="mono" style="color:var(--bridge-muted);font-size:11px;">REHARM #42 · 1/3</span>
+            </nav>
+            <div style="padding:12px 12px 0;">
+              <div class="daily-lab-chip">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span class="daily-lab-chip-mark">RL</span>
+                  <div>
+                    <div class="daily-lab-chip-title" style="font-size:14px;">Learn Tritone Sub in Reharm Lab</div>
+                    <div class="daily-lab-chip-sub">?move=tritone-sub&amp;from=reharm</div>
+                  </div>
+                </div>
+                <span class="daily-lab-chip-go">Lab ↗</span>
+              </div>
+            </div>
+            <aside class="daily-next-card">
+              <div>
+                <div style="font-family:var(--font-mono);font-size:10px;color:var(--bridge-accent);font-weight:700;">UP NEXT TODAY</div>
+                <div style="font-weight:700;font-size:14px;">STEPWISE #42</div>
+              </div>
+              <span class="daily-next-cta">Play Next →</span>
+            </aside>
+          </div>
+          <div class="bridge-host is-stepwise">
+            <nav class="daily-bridge-bar">
+              <span class="daily-back-link">← Reharm Daily</span>
+              <span class="mono" style="color:var(--bridge-muted);font-size:11px;">STEPWISE #42 · 2/3</span>
+            </nav>
+            <div style="padding:12px 12px 0;">
+              <div class="daily-lab-chip">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span class="daily-lab-chip-mark">RL</span>
+                  <div>
+                    <div class="daily-lab-chip-title" style="font-size:14px;">Learn Diminished Pivot in Reharm Lab</div>
+                    <div class="daily-lab-chip-sub">?move=diminished-pivot&amp;from=stepwise</div>
+                  </div>
+                </div>
+                <span class="daily-lab-chip-go">Lab ↗</span>
+              </div>
+            </div>
+            <aside class="daily-next-card">
+              <div>
+                <div style="font-family:var(--font-mono);font-size:10px;color:var(--bridge-accent);font-weight:700;">UP NEXT TODAY</div>
+                <div style="font-weight:700;font-size:14px;">BARLINE #42</div>
+              </div>
+              <span class="daily-next-cta">Play Next →</span>
+            </aside>
+          </div>
+        `;
+        body.appendChild(grid);
+      }, true);
+    }
+
+    /* =========================================================================
+       Interactive Actions & Controls
+       ========================================================================= */
+    function triggerLaunch(gameId) {
+      const game = getActiveGames().find(g => g.id === gameId);
+      if (!game) return;
+      if (state.offline && game.effectiveStatus === "lab") {
+        showToast("Offline — Reharm Lab needs a connection unless previously cached.");
+        return;
+      }
+      state.launchTargetId = gameId;
+      document.getElementById("launch-cover").src = game.cover;
+      document.getElementById("launch-title").textContent = game.effectiveStatus === "lab"
+        ? "Opening Reharm Lab…"
+        : `Opening ${game.name} #${CATALOG.hub.puzzleNo}…`;
+      document.getElementById("launch-desc").textContent = `Prototype handoff preview · Target URL: ${game.url || "TBD"} (your ${state.mutedDefault ? "muted" : "audio"} preference carries along).`;
+      document.getElementById("btn-sim-complete").style.display = game.effectiveStatus === "live" ? "" : "none";
+      document.getElementById("launch-veil").dataset.active = "true";
+    }
+
+    function completeGameDemo(gameId) {
+      const mockScores = {
+        reharm: { scoreLabel: "91/100 · Top 4%", shareText: "🎛️ REHARM: 91/100 · ▲ Top 4% Spice", labMove: { slug: "tritone-sub", label: "Tritone Sub" } },
+        "chord-trench": { scoreLabel: "492m / 600m", shareText: "🌊 CHORD TRENCH: 492m/600m" },
+        stepwise: { scoreLabel: "3 moves (Par)", shareText: "🪜 STEPWISE: 3 moves (PAR)", labMove: { slug: "diminished-pivot", label: "Diminished Pivot" } },
+        quartet: { scoreLabel: "1 mistake · Pure Ear", shareText: "🎼 QUARTET: 1 mistake (🎧 Pure Ear)" },
+        mend: { scoreLabel: "4/4 restored", shareText: "🩺 MEND: 4/4 restored", labMove: { slug: "lydian-sharp4", label: "Lydian #4 Lift" } },
+        barline: { scoreLabel: "±10ms pocket", shareText: "🥁 BARLINE: ±10ms pocket" },
+        tavdle: { scoreLabel: "3/6 guesses", shareText: "🎵 TAVDLE: 3/6" }
+      };
+      const prev = getRecord(gameId);
+      const mock = mockScores[gameId] || { scoreLabel: "Done", shareText: `${gameId}: Done` };
+      const wasZeroPlayed = getLiveGames(getActiveGames()).every(g => getRecord(g.id).status !== "done");
+      state.records[gameId] = {
+        ...prev,
+        ...mock,
+        status: "done",
+        streak: (prev.streak || 0) + 1,
+        played: (prev.played || 0) + 1
+      };
+      if (wasZeroPlayed) state.hubStreak += 1;
+      state.lastStampedId = gameId;
+      renderBoard();
+      if (wasZeroPlayed) {
+        const sp = document.getElementById("btn-open-stats");
+        sp.classList.add("is-ticking");
+        setTimeout(() => sp.classList.remove("is-ticking"), 400);
+      }
+      showToast(`${gameId.toUpperCase()} stamped DONE ✓`);
+    }
+
+    function toggleBell(gameId) {
+      state.waitlist[gameId] = !state.waitlist[gameId];
+      const name = CATALOG.games.find(g => g.id === gameId)?.name || gameId;
+      renderBoard();
+      showToast(state.waitlist[gameId]
+        ? `Saved locally — ${name} will highlight when live.`
+        : `Removed local reminder for ${name}.`);
+    }
+
+    function setTheme(mode) {
+      state.theme = mode;
+      if (mode === "system") delete document.documentElement.dataset.theme;
+      else document.documentElement.dataset.theme = mode;
+      const labels = { system: "Theme: System", light: "Theme: Light", dark: "Theme: Dark" };
+      document.getElementById("btn-cycle-theme").textContent = labels[mode];
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.dataset.visible = "true";
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { el.dataset.visible = "false"; }, 2400);
+    }
+
+    function updateCountdown() {
+      const now = new Date();
+      const midnight = new Date(now);
+      midnight.setHours(24, 0, 0, 0);
+      const diff = Math.max(0, Math.floor((midnight - now) / 1000));
+      const h = String(Math.floor(diff / 3600)).padStart(2, "0");
+      const m = String(Math.floor((diff % 3600) / 60)).padStart(2, "0");
+      const s = String(diff % 60).padStart(2, "0");
+      const clock = document.getElementById("midnight-clock");
+      if (clock) clock.textContent = `${h}:${m}:${s}`;
+    }
+
+    /* =========================================================================
+       Event Wiring
+       ========================================================================= */
+    document.querySelectorAll(".proto-btn[data-preset]").forEach(btn => {
+      btn.addEventListener("click", () => applyPreset(btn.dataset.preset));
+    });
+
+    document.getElementById("btn-stamp-demo").addEventListener("click", () => {
+      const live = getLiveGames(getActiveGames());
+      const next = live.find(g => getRecord(g.id).status !== "done");
+      if (next) completeGameDemo(next.id);
+      else showToast("All live puzzles are already stamped Done today!");
+    });
+
+    document.getElementById("btn-open-bridges").addEventListener("click", openBridgeShowcase);
+    document.getElementById("btn-cycle-theme").addEventListener("click", () => {
+      const order = ["system", "light", "dark"];
+      setTheme(order[(order.indexOf(state.theme) + 1) % order.length]);
+    });
+    document.getElementById("btn-toggle-motion").addEventListener("click", (e) => {
+      state.reducedMotion = !state.reducedMotion;
+      document.documentElement.dataset.reducedMotion = String(state.reducedMotion);
+      e.currentTarget.setAttribute("aria-pressed", String(state.reducedMotion));
+      e.currentTarget.textContent = state.reducedMotion ? "Motion: Off" : "Motion: On";
+    });
+
+    document.getElementById("btn-dismiss-banner").addEventListener("click", () => {
+      state.bannerDismissed = true;
+      renderBoard();
+    });
+
+    document.getElementById("btn-open-stats").addEventListener("click", openStatsDrawer);
+    document.getElementById("btn-open-stats-top").addEventListener("click", openStatsDrawer);
+    document.getElementById("btn-open-share").addEventListener("click", openShareModal);
+    document.getElementById("btn-celebrate-share").addEventListener("click", openShareModal);
+    document.getElementById("btn-celebrate-lab").addEventListener("click", () => triggerLaunch("make-the-changes"));
+    document.getElementById("btn-open-intro").addEventListener("click", openIntroModal);
+    document.getElementById("btn-open-settings").addEventListener("click", openSettingsSheet);
+    document.getElementById("btn-close-sheet").addEventListener("click", closeSheet);
+    backdrop.addEventListener("click", (e) => { if (e.target === backdrop) closeSheet(); });
+
+    document.getElementById("btn-launch-cancel").addEventListener("click", () => {
+      document.getElementById("launch-veil").dataset.active = "false";
+    });
+    document.getElementById("btn-sim-complete").addEventListener("click", () => {
+      document.getElementById("launch-veil").dataset.active = "false";
+      if (state.launchTargetId) completeGameDemo(state.launchTargetId);
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeSheet();
+        document.getElementById("launch-veil").dataset.active = "false";
+      }
+    });
+
+    // Boot + support URL query hooks (?preset=...&theme=...) for easy review
+    const params = new URLSearchParams(location.search);
+    if (params.get("theme")) setTheme(params.get("theme"));
+    applyPreset(params.get("preset") || "launch");
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  </script>
+</body>
+</html>

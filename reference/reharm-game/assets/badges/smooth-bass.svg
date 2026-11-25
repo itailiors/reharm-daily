@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" role="img" aria-label="Smooth Bass">
+  <circle cx="32" cy="32" r="30" fill="#22252C" stroke="#3E4454" stroke-width="1.5"/>
+  <circle cx="32" cy="32" r="26" fill="#0C0D10" stroke="#5EC2B7" stroke-opacity="0.45" stroke-width="1"/>
+  <path d="M14 38C19 24 26 24 32 32C38 40 45 40 50 26" stroke="#5EC2B7" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="14" cy="38" r="2.5" fill="#D8AD66"/>
+  <circle cx="32" cy="32" r="2.5" fill="#D8AD66"/>
+  <circle cx="50" cy="26" r="2.5" fill="#D8AD66"/>
+  <line x1="16" y1="46" x2="48" y2="46" stroke="#2B2F3A" stroke-width="2" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" role="img" aria-label="Backdoor Dominant">
+  <circle cx="32" cy="32" r="30" fill="#22252C" stroke="#3E4454" stroke-width="1.5"/>
+  <circle cx="32" cy="32" r="26" fill="#0C0D10" stroke="#FF7A5C" stroke-opacity="0.45" stroke-width="1"/>
+  <path d="M21 46V29C21 22.925 25.925 18 32 18C38.075 18 43 22.925 43 29V46" stroke="#D8AD66" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M25 46V30C25 26.134 28.134 23 32 23C35.866 23 39 26.134 39 30V46H25Z" fill="#FF7A5C" fill-opacity="0.22" stroke="#FF7A5C" stroke-width="1.5"/>
+  <circle cx="34.5" cy="35" r="2" fill="#E8A849"/>
+  <path d="M14 40H18M12 44H18M46 40H50M46 44H52" stroke="#E8A849" stroke-width="2" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 270" width="480" height="270" fill="none" role="img" aria-label="STEPWISE cover art">
+  <rect width="480" height="270" fill="#F4F1EA"/>
+  <!-- Drafting grid lines -->
+  <g stroke="#D6CFC1" stroke-width="1">
+    <path d="M0 45H480M0 90H480M0 135H480M0 180H480M0 225H480"/>
+    <path d="M60 0V270M145 0V270M240 0V270M335 0V270M420 0V270"/>
+  </g>
+  <!-- Top Par badge -->
+  <rect x="28" y="22" width="114" height="28" rx="14" fill="#0F5E57"/>
+  <text x="44" y="40" fill="#FBF3DF" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="700">PAR 3 · +5st</text>
+  <!-- Start -> Target header -->
+  <text x="274" y="41" fill="#182026" font-family="'JetBrains Mono', monospace" font-size="14" font-weight="700">C Maj ──▶ F#m</text>
+
+  <!-- 4 ladder rungs / voice-leading curves -->
+  <path d="M84 185C118 185 128 164 166 164" stroke="#0F5E57" stroke-width="3" stroke-linecap="round"/>
+  <path d="M84 140H166" stroke="#9AA5A0" stroke-width="2" stroke-dasharray="4 4"/>
+  <path d="M84 95H166" stroke="#9AA5A0" stroke-width="2" stroke-dasharray="4 4"/>
+
+  <path d="M194 164H276" stroke="#9AA5A0" stroke-width="2" stroke-dasharray="4 4"/>
+  <path d="M194 140C228 140 238 118 276 118" stroke="#D95D39" stroke-width="3" stroke-linecap="round"/>
+  <path d="M194 95H276" stroke="#9AA5A0" stroke-width="2" stroke-dasharray="4 4"/>
+
+  <path d="M304 164H386" stroke="#9AA5A0" stroke-width="2" stroke-dasharray="4 4"/>
+  <path d="M304 118H386" stroke="#9AA5A0" stroke-width="2" stroke-dasharray="4 4"/>
+  <path d="M304 95C338 95 348 76 386 76" stroke="#0F5E57" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Rung 1: C Maj -->
+  <rect x="46" y="76" width="52" height="128" rx="8" fill="#FFFFFF" stroke="#182026" stroke-width="1.6"/>
+  <circle cx="72" cy="95" r="7" fill="#182026"/>
+  <circle cx="72" cy="140" r="7" fill="#182026"/>
+  <circle cx="72" cy="185" r="7" fill="#0F5E57"/>
+  <text x="72" y="226" text-anchor="middle" fill="#182026" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="700">C</text>
+
+  <!-- Rung 2: Am -->
+  <rect x="154" y="76" width="52" height="128" rx="8" fill="#FFFFFF" stroke="#0F5E57" stroke-width="1.8"/>
+  <circle cx="180" cy="95" r="7" fill="#182026"/>
+  <circle cx="180" cy="140" r="7" fill="#D95D39"/>
+  <circle cx="180" cy="164" r="7" fill="#0F5E57"/>
+  <text x="180" y="226" text-anchor="middle" fill="#0F5E57" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="700">Am</text>
+
+  <!-- Rung 3: A Maj -->
+  <rect x="264" y="76" width="52" height="128" rx="8" fill="#FFFFFF" stroke="#D95D39" stroke-width="1.8"/>
+  <circle cx="290" cy="95" r="7" fill="#0F5E57"/>
+  <circle cx="290" cy="118" r="7" fill="#D95D39"/>
+  <circle cx="290" cy="164" r="7" fill="#182026"/>
+  <text x="290" y="226" text-anchor="middle" fill="#D95D39" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="700">A</text>
+
+  <!-- Rung 4: F#m -->
+  <rect x="374" y="62" width="56" height="142" rx="8" fill="#0F5E57" stroke="#0B3B36" stroke-width="1.8"/>
+  <circle cx="402" cy="76" r="7" fill="#FBF3DF"/>
+  <circle cx="402" cy="118" r="7" fill="#FBF3DF"/>
+  <circle cx="402" cy="164" r="7" fill="#FBF3DF"/>
+  <text x="402" y="226" text-anchor="middle" fill="#0F5E57" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="700">F#m</text>
+</svg>

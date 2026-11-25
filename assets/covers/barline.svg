@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 270" width="480" height="270" fill="none" role="img" aria-label="BARLINE cover art">
+  <rect width="480" height="270" fill="#161412"/>
+  <!-- Outer subtle turntable / metronome rings -->
+  <circle cx="240" cy="135" r="108" stroke="#2D2722" stroke-width="1"/>
+  <circle cx="240" cy="135" r="86" stroke="#3D352E" stroke-width="2" stroke-dasharray="3 5"/>
+  <!-- Euclidean 2+2+3 rhythm arcs on radius 86 -->
+  <!-- Group A (beats 1-2): Amber -->
+  <path d="M 240 49 A 86 86 0 0 1 307.2 81.4" stroke="#E3B23C" stroke-width="7" stroke-linecap="round"/>
+  <!-- Group B (beats 3-4): Coral -->
+  <path d="M 323.8 154.1 A 86 86 0 0 1 277.3 212.5" stroke="#F58979" stroke-width="7" stroke-linecap="round"/>
+  <!-- Group C (beats 5-7): Teal/Sage -->
+  <path d="M 202.7 212.5 A 86 86 0 0 1 172.8 81.4" stroke="#7DD0C5" stroke-width="7" stroke-linecap="round"/>
+  <!-- Radial slice cut marks (2 + 2 + 3) -->
+  <line x1="240" y1="26" x2="240" y2="62" stroke="#E3B23C" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="336" y1="114" x2="306" y2="120" stroke="#8C7D6B" stroke-width="2" stroke-dasharray="3 3"/>
+  <line x1="240" y1="208" x2="240" y2="244" stroke="#8C7D6B" stroke-width="2" stroke-dasharray="3 3"/>
+  <!-- 7 Subdivision Beat Nodes -->
+  <!-- Beat 1 (Locked Diamond at 12 o'clock) -->
+  <polygon points="240,38 250,49 240,60 230,49" fill="#E3B23C" stroke="#161412" stroke-width="2"/>
+  <circle cx="307.2" cy="81.4" r="6" fill="#E3B23C"/>
+  <circle cx="323.8" cy="154.1" r="7" fill="#F58979"/>
+  <circle cx="277.3" cy="212.5" r="6" fill="#F58979"/>
+  <circle cx="202.7" cy="212.5" r="7" fill="#7DD0C5"/>
+  <circle cx="156.2" cy="154.1" r="6" fill="#7DD0C5"/>
+  <circle cx="172.8" cy="81.4" r="6" fill="#7DD0C5"/>
+  <!-- Center Meter Readout -->
+  <circle cx="240" cy="135" r="42" fill="#211D1A" stroke="#DFB15B" stroke-opacity="0.45" stroke-width="1.5"/>
+  <text x="240" y="138" text-anchor="middle" fill="#E8DCC4" font-family="'JetBrains Mono', monospace" font-size="22" font-weight="700">7/8</text>
+  <text x="240" y="156" text-anchor="middle" fill="#DFB15B" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="600">2+2+3</text>
+  <!-- Pocket Timing Pill -->
+  <rect x="24" y="218" width="112" height="28" rx="14" fill="#211D1A" stroke="#7DD0C5" stroke-opacity="0.5"/>
+  <text x="80" y="236" text-anchor="middle" fill="#7DD0C5" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700">BEAT 1 · ±12ms</text>
+</svg>

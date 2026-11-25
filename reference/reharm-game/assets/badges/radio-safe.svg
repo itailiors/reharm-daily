@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" role="img" aria-label="Radio Safe">
+  <circle cx="32" cy="32" r="30" fill="#22252C" stroke="#3E4454" stroke-width="1.5"/>
+  <circle cx="32" cy="32" r="26" fill="#0C0D10" stroke="#5EC2B7" stroke-opacity="0.45" stroke-width="1"/>
+  <path d="M18 39A14 14 0 0 1 46 39" stroke="#5EC2B7" stroke-width="2" stroke-linecap="round"/>
+  <path d="M23 39A9 9 0 0 1 41 39" stroke="#5EC2B7" stroke-opacity="0.65" stroke-width="1.8" stroke-linecap="round"/>
+  <circle cx="32" cy="40" r="3" fill="#F4F1EA"/>
+  <line x1="32" y1="40" x2="39" y2="23" stroke="#E8A849" stroke-width="2.2" stroke-linecap="round"/>
+</svg>

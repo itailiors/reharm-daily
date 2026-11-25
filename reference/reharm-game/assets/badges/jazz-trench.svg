@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" role="img" aria-label="Jazz Trench">
+  <circle cx="32" cy="32" r="30" fill="#22252C" stroke="#3E4454" stroke-width="1.5"/>
+  <circle cx="32" cy="32" r="26" fill="#0C0D10" stroke="#FF7A5C" stroke-opacity="0.45" stroke-width="1"/>
+  <circle cx="32" cy="32" r="18" stroke="#D8AD66" stroke-opacity="0.35" stroke-width="1.2"/>
+  <circle cx="32" cy="32" r="12" stroke="#E8A849" stroke-opacity="0.55" stroke-width="1.4"/>
+  <circle cx="32" cy="32" r="6" fill="#FF7A5C" fill-opacity="0.25" stroke="#FF7A5C" stroke-width="1.8"/>
+  <circle cx="32" cy="32" r="2" fill="#F4F1EA"/>
+  <path d="M32 14V19M32 45V50M14 32H19M45 32H50" stroke="#D8AD66" stroke-width="1.4" stroke-linecap="round"/>
+</svg>

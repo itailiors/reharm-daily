@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="none" role="img" aria-label="Reharm Daily">
+  <path d="M9.5 6.8C18 6 30 6.7 38.5 6.4C41.4 6.5 42.1 9.2 42 14.5C41.8 23.5 42.3 32 41.9 39.2C41.6 41.8 39.2 42.2 35.5 42.1C27.5 41.9 18 42.4 9.8 41.9C7.2 41.6 6.2 39.4 6.3 34.5C6.5 25.5 6.1 15 6.6 9.8C6.8 7.5 7.9 7 9.5 6.8Z" fill="#FBF3DF" stroke="#1E2A78" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M10.5 7.6C19 7.1 31 6.4 37.8 7.3C40.5 7.7 41.2 10.2 41.1 15.2C41 24 41.4 32.8 41 38.5C40.7 41 38.5 41.3 34.8 41.2C27 41.1 18.5 41.5 10.5 41C8.1 40.8 7.1 38.6 7.2 34C7.3 25 7.1 15.6 7.4 10.4C7.6 8.3 8.7 7.8 10.5 7.6Z" stroke="#1E2A78" stroke-opacity="0.55" stroke-width="1" stroke-linecap="round"/>
+  <path d="M15 4V9M24 4V9M33 4V9M11 16H37" stroke="#1E2A78" stroke-width="1.7" stroke-linecap="round"/>
+  <rect x="13" y="26" width="4" height="9" rx="1" fill="#5B85C2"/>
+  <rect x="19" y="22" width="4" height="13" rx="1" fill="#E3B23C"/>
+  <rect x="25" y="19" width="4" height="16" rx="1" fill="#7E9C6B"/>
+  <rect x="31" y="23" width="4" height="12" rx="1" fill="#1E2A78"/>
+  <circle cx="38" cy="10" r="6" fill="#C2311F"/>
+  <text x="38" y="13.2" text-anchor="middle" fill="#FBF3DF" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700">1</text>
+</svg>

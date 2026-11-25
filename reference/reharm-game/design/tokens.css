@@ -1,0 +1,290 @@
+/* ============================================================================
+   REHARM — Production Design Tokens (CSS Custom Properties)
+   Aesthetic: Tactile Studio Hardware x NYT Games Daily Restraint
+   Source of truth synchronized with design/tokens.json
+   ============================================================================ */
+
+:root,
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Surfaces */
+  --bg-canvas: #111215;
+  --bg-surface: #191B20;
+  --bg-elevated: #22252C;
+  --bg-well: #0C0D10;
+  --bg-hover: #2A2E37;
+  --bg-backdrop: rgba(9, 10, 13, 0.78);
+
+  /* Borders & Hardware Shading */
+  --border-subtle: #2B2F3A;
+  --border-strong: #3E4454;
+  --key-highlight: rgba(255, 255, 255, 0.06);
+  --key-lip: rgba(0, 0, 0, 0.48);
+
+  /* Typography Ink */
+  --text-primary: #F4F1EA;
+  --text-secondary: #B2B6C2;
+  --text-muted: #8D93A3;
+
+  /* Hardware Accents */
+  --accent-primary: #E8A849;
+  --accent-primary-hover: #F2BA63;
+  --accent-primary-ink: #14120E;
+  --accent-primary-soft: rgba(232, 168, 73, 0.14);
+  --accent-primary-solid-bg: #E8A849;
+  --accent-primary-solid-ink: #14120E;
+  --accent-brass: #D8AD66;
+  --accent-brass-border: #8A6C3B;
+  --accent-brass-bg: #1C1A16;
+
+  /* Harmonic Spice Tiers */
+  --tier-safe-fg: #5EC2B7;
+  --tier-safe-bg: rgba(94, 194, 183, 0.14);
+  --tier-safe-border: rgba(94, 194, 183, 0.42);
+  --tier-safe-solid-ink: #0C1A19;
+
+  --tier-jazz-fg: #E8B24A;
+  --tier-jazz-bg: rgba(232, 178, 74, 0.14);
+  --tier-jazz-border: rgba(232, 178, 74, 0.45);
+  --tier-jazz-solid-ink: #1A1306;
+
+  --tier-modal-fg: #C084FC;
+  --tier-modal-bg: rgba(192, 132, 252, 0.15);
+  --tier-modal-border: rgba(192, 132, 252, 0.45);
+  --tier-modal-solid-ink: #180B26;
+
+  --tier-deep-fg: #FF7A5C;
+  --tier-deep-bg: rgba(255, 107, 74, 0.16);
+  --tier-deep-border: rgba(255, 107, 74, 0.48);
+  --tier-deep-solid-ink: #1E0804;
+
+  /* Semantic States */
+  --state-legal-fg: #4ADE80;
+  --state-legal-bg: rgba(74, 222, 128, 0.14);
+  --state-legal-border: rgba(74, 222, 128, 0.45);
+
+  --state-queued-fg: #E8A849;
+  --state-queued-bg: rgba(232, 168, 73, 0.18);
+  --state-queued-border: #E8A849;
+
+  --state-clash-fg: #FCA5A5;
+  --state-clash-bg: #2E1618;
+  --state-clash-border: #F87171;
+
+  --helper-dot: #5EC2B7;
+  --helper-glow: rgba(94, 194, 183, 0.45);
+
+  /* Tactile Piano Keys */
+  --piano-white-bg: #ECE8DF;
+  --piano-white-pressed: #F7F4EE;
+  --piano-white-ink: #191B20;
+  --piano-black-bg: #1F222A;
+  --piano-black-pressed: #2B2F3A;
+  --piano-black-ink: #D4D7E0;
+  --piano-active-bg: #E8A849;
+  --piano-active-ink: #14120E;
+
+  /* OLED Timeline Playhead & Pills */
+  --playhead-line: #E8A849;
+  --playhead-glow: rgba(232, 168, 73, 0.50);
+  --pill-idle: #343947;
+  --pill-active: #E8A849;
+  --pill-held: #F4F1EA;
+
+  /* Shadows & Elevations */
+  --shadow-keycap: inset 0 1px 0 var(--key-highlight), 0 2px 0 var(--key-lip);
+  --shadow-keycap-pressed: inset 0 2px 4px rgba(0, 0, 0, 0.25);
+  --shadow-well: inset 0 2px 6px rgba(0, 0, 0, 0.55);
+  --shadow-panel: 0 16px 40px rgba(0, 0, 0, 0.45);
+  --glow-amber: 0 0 18px rgba(232, 168, 73, 0.26);
+  --glow-brass: 0 0 14px rgba(216, 173, 102, 0.20);
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+
+  /* Surfaces */
+  --bg-canvas: #F4F1EA;
+  --bg-surface: #FFFFFF;
+  --bg-elevated: #EAE5DB;
+  --bg-well: #E5E0D5;
+  --bg-hover: #DFD9CC;
+  --bg-backdrop: rgba(24, 25, 29, 0.54);
+
+  /* Borders & Hardware Shading */
+  --border-subtle: #D6D0C4;
+  --border-strong: #B3ABA0;
+  --key-highlight: rgba(255, 255, 255, 0.72);
+  --key-lip: rgba(24, 25, 29, 0.16);
+
+  /* Typography Ink */
+  --text-primary: #18191D;
+  --text-secondary: #4B4E59;
+  --text-muted: #5C606D;
+
+  /* Hardware Accents */
+  --accent-primary: #9F5807;
+  --accent-primary-hover: #874905;
+  --accent-primary-ink: #FFFFFF;
+  --accent-primary-soft: rgba(159, 88, 7, 0.12);
+  --accent-primary-solid-bg: #E8A849;
+  --accent-primary-solid-ink: #18191D;
+  --accent-brass: #7E5716;
+  --accent-brass-border: #C49A52;
+  --accent-brass-bg: #FAF3E3;
+
+  /* Harmonic Spice Tiers */
+  --tier-safe-fg: #0B5D56;
+  --tier-safe-bg: rgba(11, 93, 86, 0.10);
+  --tier-safe-border: rgba(11, 93, 86, 0.35);
+  --tier-safe-solid-ink: #FFFFFF;
+
+  --tier-jazz-fg: #7D4704;
+  --tier-jazz-bg: rgba(125, 71, 4, 0.10);
+  --tier-jazz-border: rgba(125, 71, 4, 0.35);
+  --tier-jazz-solid-ink: #FFFFFF;
+
+  --tier-modal-fg: #7E22CE;
+  --tier-modal-bg: rgba(126, 34, 206, 0.10);
+  --tier-modal-border: rgba(126, 34, 206, 0.32);
+  --tier-modal-solid-ink: #FFFFFF;
+
+  --tier-deep-fg: #A8270D;
+  --tier-deep-bg: rgba(168, 39, 13, 0.10);
+  --tier-deep-border: rgba(168, 39, 13, 0.35);
+  --tier-deep-solid-ink: #FFFFFF;
+
+  /* Semantic States */
+  --state-legal-fg: #116330;
+  --state-legal-bg: rgba(17, 99, 48, 0.10);
+  --state-legal-border: rgba(17, 99, 48, 0.38);
+
+  --state-queued-fg: #824505;
+  --state-queued-bg: rgba(232, 168, 73, 0.22);
+  --state-queued-border: #A85E08;
+
+  --state-clash-fg: #B91C1C;
+  --state-clash-bg: #FEE2E2;
+  --state-clash-border: #DC2626;
+
+  --helper-dot: #0B5D56;
+  --helper-glow: rgba(11, 93, 86, 0.35);
+
+  /* Tactile Piano Keys */
+  --piano-white-bg: #FFFFFF;
+  --piano-white-pressed: #F4F1EA;
+  --piano-white-ink: #18191D;
+  --piano-black-bg: #242730;
+  --piano-black-pressed: #363A47;
+  --piano-black-ink: #F4F1EA;
+  --piano-active-bg: #E8A849;
+  --piano-active-ink: #18191D;
+
+  /* OLED Timeline Playhead & Pills */
+  --playhead-line: #A85E08;
+  --playhead-glow: rgba(168, 94, 8, 0.35);
+  --pill-idle: #B9B2A4;
+  --pill-active: #A85E08;
+  --pill-held: #18191D;
+
+  /* Shadows & Elevations */
+  --shadow-keycap: inset 0 1px 0 var(--key-highlight), 0 2px 0 var(--key-lip);
+  --shadow-keycap-pressed: inset 0 2px 4px rgba(24, 25, 29, 0.16);
+  --shadow-well: inset 0 2px 5px rgba(24, 25, 29, 0.12);
+  --shadow-panel: 0 16px 40px rgba(24, 25, 29, 0.16);
+  --glow-amber: 0 0 16px rgba(184, 107, 10, 0.18);
+  --glow-brass: 0 0 12px rgba(126, 87, 22, 0.15);
+}
+
+/* ============================================================================
+   Theme-Invariant Foundations: Typography, Spacing, Radii, Layers, Motion
+   ============================================================================ */
+:root {
+  /* Fonts */
+  --font-display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+
+  /* Type Scale */
+  --text-xs: 0.6875rem;      /* 11px */
+  --text-sm: 0.75rem;        /* 12px */
+  --text-base: 0.875rem;     /* 14px */
+  --text-md: 1rem;           /* 16px */
+  --text-lg: 1.125rem;       /* 18px */
+  --text-xl: 1.375rem;       /* 22px */
+  --text-display-md: 1.75rem;/* 28px */
+  --text-display-lg: 2.25rem;/* 36px */
+  --text-display-xl: 3.5rem; /* 56px */
+
+  /* Spacing Scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --touch-min: 44px;
+
+  /* Radii */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-pill: 9999px;
+
+  /* Z-Index Layers */
+  --z-base: 0;
+  --z-timeline: 10;
+  --z-playhead: 15;
+  --z-drawer: 20;
+  --z-header: 30;
+  --z-backdrop: 40;
+  --z-modal: 50;
+  --z-gate: 60;
+  --z-toast: 80;
+
+  /* Breakpoints (Reference) */
+  --bp-mobile: 390px;
+  --bp-tablet: 768px;
+  --bp-desktop: 1280px;
+
+  /* Motion Durations */
+  --dur-instant: 80ms;
+  --dur-fast: 140ms;
+  --dur-normal: 240ms;
+  --dur-smooth: 360ms;
+  --dur-ceremony: 900ms;
+  --dur-pulse-beat: 1250ms;
+
+  /* Motion Easings */
+  --ease-snap: cubic-bezier(0.2, 0.9, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.45, 0.64, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-linear: linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-instant: 0ms;
+    --dur-fast: 0ms;
+    --dur-normal: 0ms;
+    --dur-smooth: 0ms;
+    --dur-ceremony: 0ms;
+    --dur-pulse-beat: 0ms;
+  }
+}
+
+[data-reduced-motion="true"] {
+  --dur-instant: 0ms;
+  --dur-fast: 0ms;
+  --dur-normal: 0ms;
+  --dur-smooth: 0ms;
+  --dur-ceremony: 0ms;
+  --dur-pulse-beat: 0ms;
+}

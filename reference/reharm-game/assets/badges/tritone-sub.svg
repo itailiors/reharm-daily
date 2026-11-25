@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" role="img" aria-label="Tritone Sub">
+  <circle cx="32" cy="32" r="30" fill="#22252C" stroke="#3E4454" stroke-width="1.5"/>
+  <circle cx="32" cy="32" r="26" fill="#0C0D10" stroke="#FF7A5C" stroke-opacity="0.45" stroke-width="1"/>
+  <circle cx="32" cy="32" r="20" stroke="#2B2F3A" stroke-width="2" stroke-dasharray="1.5 8.97"/>
+  <circle cx="32" cy="11" r="2" fill="#D8AD66"/>
+  <circle cx="32" cy="53" r="2" fill="#FF7A5C"/>
+  <path d="M35 15L23 33H31L29 49L41 31H33L35 15Z" fill="#FF7A5C" stroke="#D8AD66" stroke-width="1.2" stroke-linejoin="round"/>
+</svg>

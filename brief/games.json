@@ -1,0 +1,99 @@
+{
+  "_note": "Mock catalog for the hub prototype. Claude Code will replace pitch/time/flags with real values per game. Status: live | planned | lab.",
+  "hub": {
+    "name": "Reharm Lab Dailys",
+    "plannedUrl": "https://itailiors.github.io/dailys/",
+    "epoch": "2026-11-25"
+  },
+  "lab": {
+    "name": "Reharm Lab",
+    "url": "https://itailiors.github.io/reharm-lab/"
+  },
+  "games": [
+    {
+      "id": "reharm",
+      "name": "REHARM",
+      "status": "live",
+      "url": "https://itailiors.github.io/reharm/",
+      "pitch": "Four bars. One melody. Pick the chords; rarer harmony scores higher.",
+      "archetype": "Krillion-style open-ended",
+      "estMinutes": 3,
+      "mutedFriendly": "partly (visual playhead; audio recommended)",
+      "scoreUnit": "Spice score 0–100 + rarity percentile",
+      "storagePrefix": "reharm:v1:",
+      "skin": "midnight studio hardware (reference/reharm-game)",
+      "labLinks": ["tritone sub", "backdoor dominant", "modal interchange", "chromatic mediant"]
+    },
+    {
+      "id": "chord-trench",
+      "name": "CHORD TRENCH",
+      "status": "planned",
+      "pitch": "Six timed rounds. Any valid chord survives; spicier chords dive deeper.",
+      "archetype": "Krillion-style timed",
+      "estMinutes": 3,
+      "mutedFriendly": "yes",
+      "scoreUnit": "depth in metres (max 600m)"
+    },
+    {
+      "id": "stepwise",
+      "name": "STEPWISE",
+      "status": "planned",
+      "pitch": "Morph one chord into another, one voice and one step at a time. Beat Par.",
+      "archetype": "Deduction / word-ladder",
+      "estMinutes": 2,
+      "mutedFriendly": "yes",
+      "scoreUnit": "steps vs Par (golf terms)"
+    },
+    {
+      "id": "quartet",
+      "name": "QUARTET",
+      "status": "planned",
+      "pitch": "Sixteen sounds, four hidden groups. Hear the connections.",
+      "archetype": "Connections-style grouping",
+      "estMinutes": 4,
+      "mutedFriendly": "no (audio-first)",
+      "scoreUnit": "mistakes left (0–4)"
+    },
+    {
+      "id": "mend",
+      "name": "MEND",
+      "status": "planned",
+      "pitch": "Today's groove has four bugs. Find them, fix them, hear it click.",
+      "archetype": "Ear + harmony repair",
+      "estMinutes": 4,
+      "mutedFriendly": "no",
+      "scoreUnit": "bugs fixed / listens used"
+    },
+    {
+      "id": "barline",
+      "name": "BARLINE",
+      "status": "planned",
+      "pitch": "Feel the downbeat. Tap Beat 1, then slice the odd meter.",
+      "archetype": "Rhythm / meter",
+      "estMinutes": 2,
+      "mutedFriendly": "partly (visual pulse)",
+      "scoreUnit": "timing accuracy %"
+    },
+    {
+      "id": "tavdle",
+      "name": "TAVDLE",
+      "status": "planned",
+      "pitch": "TBD — a note/melody daily. Design a placeholder card.",
+      "archetype": "TBD",
+      "estMinutes": 2,
+      "mutedFriendly": "TBD",
+      "scoreUnit": "TBD"
+    },
+    {
+      "id": "make-the-changes",
+      "name": "Make the Changes",
+      "status": "lab",
+      "url": "https://itailiors.github.io/reharm-lab/",
+      "pitch": "Hear and play root movements and functions. A practice game inside Reharm Lab.",
+      "archetype": "Practice (not a daily)",
+      "estMinutes": 5,
+      "mutedFriendly": "no",
+      "scoreUnit": "points + streak"
+    }
+  ]
+}

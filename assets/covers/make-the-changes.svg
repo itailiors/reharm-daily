@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 270" width="480" height="270" fill="none" role="img" aria-label="Make the Changes cover art">
+  <rect width="480" height="270" fill="#F6E9C9"/>
+  <!-- Hand-drawn outer notebook border matching Reharm Lab -->
+  <path d="M18 18C140 16 320 19 462 17C464 85 461 175 463 252C325 254 155 251 17 253C15 170 19 88 18 18Z" fill="#FBF3DF" stroke="#1E2A78" stroke-width="2.4" stroke-linejoin="round"/>
+  <!-- Mustard watercolour wash highlight around target cadence -->
+  <path d="M168 92C230 78 335 80 398 94C415 110 412 162 394 176C335 190 225 186 164 172C146 154 148 106 168 92Z" fill="#E3B23C" fill-opacity="0.34"/>
+  <!-- Ink oval loop around the target chord change -->
+  <ellipse cx="282" cy="132" rx="126" ry="50" stroke="#1E2A78" stroke-width="2" stroke-dasharray="10 4"/>
+  <!-- 5-line lead sheet staff -->
+  <g stroke="#1E2A78" stroke-opacity="0.55" stroke-width="1.3">
+    <path d="M40 120H440"/><path d="M40 132H440"/><path d="M40 144H440"/><path d="M40 156H440"/><path d="M40 168H440"/>
+  </g>
+  <!-- Barlines -->
+  <path d="M152 120V168M276 120V168M402 120V168" stroke="#1E2A78" stroke-width="1.8"/>
+  <!-- Chord Symbols in Kalam -->
+  <text x="64" y="96" fill="#1E2A78" font-family="'Kalam', cursive" font-size="24" font-weight="700">Dm9</text>
+  <text x="190" y="96" fill="#1E2A78" font-family="'Kalam', cursive" font-size="24" font-weight="700">G13(b9)</text>
+  <text x="318" y="96" fill="#1E2A78" font-family="'Kalam', cursive" font-size="24" font-weight="700">CMaj9</text>
+  <!-- Quarter noteheads -->
+  <ellipse cx="82" cy="156" rx="7" ry="5" fill="#1E2A78"/><path d="M88 155V126" stroke="#1E2A78" stroke-width="1.8"/>
+  <ellipse cx="218" cy="144" rx="7" ry="5" fill="#1E2A78"/><path d="M224 143V114" stroke="#1E2A78" stroke-width="1.8"/>
+  <ellipse cx="344" cy="132" rx="7" ry="5" fill="#1E2A78"/><path d="M350 131V102" stroke="#1E2A78" stroke-width="1.8"/>
+  <!-- Red teacher's-pen annotation & checkmark -->
+  <text x="184" y="212" fill="#A52213" font-family="'Kalam', cursive" font-size="16" font-weight="700">where does this want to go? ✓</text>
+  <!-- Bottom corner practice pill -->
+  <rect x="34" y="200" width="124" height="28" rx="14" fill="#1E2A78"/>
+  <text x="96" y="218" text-anchor="middle" fill="#FBF3DF" font-family="'Plus Jakarta Sans', sans-serif" font-size="11" font-weight="700">LAB PRACTICE</text>
+</svg>

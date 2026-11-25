@@ -1,0 +1,20 @@
+{
+  "name": "reharm-daily",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Reharm Daily — one daily sheet for every Reharm music puzzle",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm run test && vite build"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "vite": "8.3.7",
+    "vitest": "5.1.0"
+  }
+}
