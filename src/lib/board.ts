@@ -1,6 +1,6 @@
 /** Aggregates every storage source into one snapshot the UI renders from. */
 import type { DailyCatalog, DailyGameRecord, GameCatalogEntry, HubStreak, Waitlist } from '../types';
-import { getLocalDateKey, puzzleNoFor, utcPuzzleNumber } from './dates';
+import { getLocalDateKey, localPuzzleNumber, puzzleNoFor } from './dates';
 import { WAITLIST_KEY, SEEN_KEY, parseSeen, parseWaitlist, type SeenLedger } from './prefs';
 import { readGameRecord, resolveForToday } from './records';
 import {
@@ -42,8 +42,8 @@ export interface BoardSnapshot {
 
 export function readLiveRecord(store: SafeStorage, game: GameCatalogEntry, todayKey: string, puzzleNo: number, now: Date): DailyGameRecord {
   if (game.id === 'reharm') {
-    // Show REHARM's own (UTC-based) puzzle number so the hub and the game agree on "#N".
-    return resolveForToday(readReharmToday(store, todayKey, now), game.id, todayKey, utcPuzzleNumber(now, REHARM_EPOCH));
+    // Show REHARM's own puzzle number (its epoch, local day) so the hub and the game agree on "#N".
+    return resolveForToday(readReharmToday(store, todayKey, now), game.id, todayKey, localPuzzleNumber(now, REHARM_EPOCH));
   }
   return resolveForToday(readGameRecord(store, game.id), game.id, todayKey, puzzleNo);
 }

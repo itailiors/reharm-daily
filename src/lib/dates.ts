@@ -44,12 +44,14 @@ export function puzzleNoFor(todayKey: string, epochKey: string): number {
   return Math.max(1, daysBetween(epochKey, todayKey) + 1);
 }
 
-/** REHARM numbers puzzles by UTC day (Reharm/src/puzzles/index.ts: puzzleNumberForDate). */
-export function utcPuzzleNumber(now: Date, epochKey: string): number {
-  const [y, m, d] = parts(epochKey);
-  const epochMs = Date.UTC(y, m - 1, d);
-  const dayStart = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
-  return Math.max(1, Math.floor((dayStart - epochMs) / DAY_MS) + 1);
+/**
+ * Puzzle number for the LOCAL calendar day of `now`, rolling over at local midnight
+ * (mirrors Reharm/src/puzzles/index.ts: puzzleNumberForDate). Works on calendar parts,
+ * so a 23h or 25h DST day still counts as one day.
+ */
+export function localPuzzleNumber(now: Date, epochKey: string): number {
+  const dayStart = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+  return Math.max(1, Math.floor((dayStart - Date.parse(`${epochKey}T00:00:00Z`)) / DAY_MS) + 1);
 }
 
 export function msUntilLocalMidnight(now: Date = new Date()): number {
