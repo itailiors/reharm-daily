@@ -45,7 +45,8 @@ export function readLiveRecord(store: SafeStorage, game: GameCatalogEntry, today
     // Show REHARM's own puzzle number (its epoch, local day) so the hub and the game agree on "#N".
     return resolveForToday(readReharmToday(store, todayKey, now), game.id, todayKey, localPuzzleNumber(now, REHARM_EPOCH));
   }
-  return resolveForToday(readGameRecord(store, game.id), game.id, todayKey, puzzleNo);
+  const no = game.epoch ? localPuzzleNumber(now, game.epoch) : puzzleNo;
+  return resolveForToday(readGameRecord(store, game.id), game.id, todayKey, no);
 }
 
 /**

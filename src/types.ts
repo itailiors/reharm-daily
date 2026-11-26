@@ -31,6 +31,8 @@ export interface GameCatalogEntry {
   scoreUnit: string;
   howToPlay: [string, string, string];
   storagePrefix?: string;
+  /** Puzzle #1 date (YYYY-MM-DD) when it differs from the hub epoch, so "#N" matches the game. */
+  epoch?: string;
   labLinks?: LabLink[];
 }
 

@@ -66,7 +66,8 @@ const games: GameCatalogEntry[] = [
   {
     id: 'stepwise',
     name: 'STEPWISE',
-    status: 'planned',
+    status: 'live',
+    url: 'https://itailiors.github.io/stepwise/',
     cover: stepwiseCover,
     shareEmoji: '🪜',
     pitch: 'Morph one chord into another, one voice and one step at a time. Beat Par.',
@@ -81,6 +82,9 @@ const games: GameCatalogEntry[] = [
       'Move exactly one voice by one or two semitones to form another valid chord.',
       'Reach the target within Par + 3 moves to hear your ladder play back.',
     ],
+    storagePrefix: 'stepwise:',
+    epoch: '2026-11-26',
+    labLinks: [{ slug: 'diminished-pivot', label: 'Diminished Pivot' }],
   },
   {
     id: 'quartet',

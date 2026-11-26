@@ -519,7 +519,7 @@ function boot(): void {
 
   // Cross-tab and return-to-tab sync (data-contract.md §4).
   window.addEventListener('storage', (e) => {
-    if (e.key === null || e.key.startsWith('daily:v1:') || e.key.startsWith('reharm:v1:')) {
+    if (e.key === null || e.key.startsWith('daily:v1:') || e.key.startsWith('reharm:v1:') || e.key.startsWith('stepwise:')) {
       if (e.key === 'daily:v1:hub:prefs') {
         prefs = loadPrefs(store);
         applyPrefs();
