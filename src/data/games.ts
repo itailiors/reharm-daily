@@ -108,7 +108,8 @@ const games: GameCatalogEntry[] = [
   {
     id: 'mend',
     name: 'MEND',
-    status: 'planned',
+    status: 'live',
+    url: 'https://itailiors.github.io/mend/',
     cover: mendCover,
     shareEmoji: '🩺',
     pitch: "Today's groove has four bugs. Find them, fix them, hear it click.",
@@ -123,6 +124,9 @@ const games: GameCatalogEntry[] = [
       'Open each lane (melody, chords, bass, cadence) and fix what sounds wrong.',
       'Fewer listens and taps score higher.',
     ],
+    storagePrefix: 'mend:',
+    epoch: '2026-10-07',
+    labLinks: [{ slug: 'lydian-sharp4', label: 'Lydian #4' }],
   },
   {
     id: 'barline',
