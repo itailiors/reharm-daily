@@ -182,12 +182,15 @@ export function settingsHTML(prefs: HubPrefs, osReduced: boolean, storageBlocked
 export function introHTML(snap: BoardSnapshot): string {
   const lead = snap.live[0];
   const leadNo = lead ? lead.record.puzzleNo || snap.puzzleNo : snap.puzzleNo;
+  const names = snap.live.map((l) => esc(l.game.name));
+  const liveList = names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}` : names[0] ?? '';
+  const liveNote = names.length ? ` (${liveList} ${names.length > 1 ? 'are' : 'is'} live today)` : '';
   return `<div class="sheet-handle" aria-hidden="true"></div>
     <div class="sheet-head"><span>${logoPair('intro-logo')}</span>
       <button class="icon-btn" type="button" data-action="intro-start" aria-label="Close">${icon('close', 'ico')}</button></div>
     <h2 class="sheet-title" id="sheet-title">One daily sheet. Every music puzzle in one place.</h2>
     <ul class="intro-rows">
-      <li><span class="intro-icon" aria-hidden="true">${icon('calendar', 'ico')}</span><div><strong>Play at your pace</strong><span>Pick any puzzle${lead ? ` (${esc(lead.game.name)} is live today)` : ''}. A new sheet drops at local midnight.</span></div></li>
+      <li><span class="intro-icon" aria-hidden="true">${icon('calendar', 'ico')}</span><div><strong>Play at your pace</strong><span>Pick any puzzle${liveNote}. A new sheet drops at local midnight.</span></div></li>
       <li><span class="intro-icon" aria-hidden="true">${icon('volume-muted', 'ico')}</span><div><strong>Commute-friendly flags</strong><span>Every card says upfront whether you can play it silently.</span></div></li>
       <li><span class="intro-icon" aria-hidden="true">${icon('book-open', 'ico')}</span><div><strong>Linked with Reharm Lab</strong><span>Streaks stay on this device (no login), and every result links to the move in the Lab.</span></div></li>
     </ul>

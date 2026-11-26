@@ -172,10 +172,10 @@ export function gameCardHTML(v: ViewState, g: GameCatalogEntry, r: DailyGameReco
     const label = r?.status === 'done' ? 'Hear &amp; compare' : r?.status === 'in_progress' ? 'Resume' : `Play ${esc(g.name)}`;
     const cls = r?.status === 'done' ? 'btn-secondary' : 'btn-primary';
     actions = `<button class="${cls} btn-lg" type="button" data-action="launch" data-id="${g.id}">${icon(r?.status === 'in_progress' ? 'arrow-right' : 'play')}<span>${label}</span></button>`;
+    // "Learn move" opens the same detail sheet as (i), so it replaces it rather than wrapping a third button.
     if (r?.status === 'done' && r.labMove) {
-      actions += `<button class="btn-secondary" type="button" data-action="detail" data-id="${g.id}">${icon('book-open')}<span>Learn move</span></button>`;
-    }
-    actions += `<button class="btn-icon-only" type="button" data-action="detail" data-id="${g.id}" aria-label="${esc(g.name)}: rules and stats">${icon('info', 'ico')}</button>`;
+      actions += `<button class="btn-secondary" type="button" data-action="detail" data-id="${g.id}" aria-label="Learn move, plus ${esc(g.name)} rules and stats">${icon('book-open')}<span>Learn move</span></button>`;
+    } else actions += `<button class="btn-icon-only" type="button" data-action="detail" data-id="${g.id}" aria-label="${esc(g.name)}: rules and stats">${icon('info', 'ico')}</button>`;
   } else if (g.status === 'planned') {
     actions = `<button class="btn-secondary bell-btn" type="button" data-action="bell" data-id="${g.id}" aria-pressed="${waitlisted}" aria-label="${waitlisted ? `Reminder on for ${esc(g.name)}` : `Notify me when ${esc(g.name)} launches`}">
         ${icon(waitlisted ? 'bell-check' : 'bell')}<span>${waitlisted ? 'Notified ✓' : 'Notify me'}</span></button>`;
