@@ -5,11 +5,11 @@
  *   reharm:v1:draft    { puzzleNumber, symbols: (string|null)[] }  (locked bar is null)
  *   reharm:v1:settings { theme, isMuted, ... }
  *
- * REHARM numbers puzzles by UTC day while the hub rolls over at local midnight, so "done today"
- * means "REHARM's currently served puzzle is in history" — exactly what REHARM itself shows.
+ * REHARM numbers puzzles by LOCAL calendar day (rolls over at local midnight, epoch day = #1),
+ * the same as the hub, so "done today" means "today's local puzzle is in REHARM's history".
  */
 import type { DailyGameRecord, LabLink } from '../types';
-import { isDateKey, utcPuzzleNumber } from './dates';
+import { isDateKey, localPuzzleNumber } from './dates';
 import { gameKey, parseGameRecord } from './records';
 import type { SafeStorage } from './storage';
 
@@ -87,7 +87,7 @@ function labMoveFor(badges: string[]): LabLink | null {
 /** Synthesize today's REHARM record from `reharm:v1:*`, or null if REHARM has no data at all. */
 export function synthesizeReharmRecord(store: SafeStorage, todayKey: string, now: Date): DailyGameRecord | null {
   const history = readReharmHistory(store);
-  const todayNumber = utcPuzzleNumber(now, REHARM_EPOCH);
+  const todayNumber = localPuzzleNumber(now, REHARM_EPOCH);
   const best = history.length ? Math.max(...history.map((h) => h.total)) : null;
   const base = {
     v: 1 as const,

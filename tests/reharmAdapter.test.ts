@@ -11,8 +11,8 @@ import {
 import { SafeStorage, memoryBackend } from '../src/lib/storage';
 import type { DailyCatalog } from '../src/types';
 
-// Noon UTC on 2026-11-27 → REHARM puzzle #3 (epoch 2026-11-25 = #1).
-const NOW = new Date(Date.UTC(2026, 10, 27, 12, 0, 0));
+// Local noon on 2026-11-27 → REHARM puzzle #3 (epoch 2026-11-25 = #1).
+const NOW = new Date(2026, 10, 27, 12, 0, 0);
 const TODAY = '2026-11-27';
 
 function entry(n: number, dateISO: string, total: number, badges: string[] = [], tier = 'deep-reharm') {
@@ -44,6 +44,14 @@ describe('reharm:v1:* adapter', () => {
       playedCount: 3,
       labMove: { slug: 'tritone-sub', label: 'Tritone Sub' },
     });
+  });
+
+  it('turns today’s Done into New at local midnight', () => {
+    const { store } = storeWith({ 'reharm:v1:history': { 3: entry(3, TODAY, 91) } });
+    const lateNight = new Date(2026, 10, 27, 23, 59, 59, 999);
+    const afterMidnight = new Date(lateNight.getTime() + 1);
+    expect(synthesizeReharmRecord(store, TODAY, lateNight)).toMatchObject({ status: 'done', puzzleNo: 3 });
+    expect(synthesizeReharmRecord(store, '2026-11-28', afterMidnight)).toMatchObject({ status: 'new', puzzleNo: 4, streak: 1 });
   });
 
   it('maps modal-borrow to the modal-interchange Lab move', () => {

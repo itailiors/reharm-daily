@@ -5,8 +5,8 @@ import {
   formatCountdown,
   getLocalDateKey,
   msUntilLocalMidnight,
+  localPuzzleNumber,
   puzzleNoFor,
-  utcPuzzleNumber,
 } from '../src/lib/dates';
 import { parseGameRecord, resolveForToday } from '../src/lib/records';
 
@@ -43,9 +43,27 @@ describe('local date keys', () => {
     expect(puzzleNoFor('2026-01-01', '2026-11-25')).toBe(1);
   });
 
-  it('matches REHARM’s UTC puzzle numbering', () => {
-    expect(utcPuzzleNumber(new Date(Date.UTC(2026, 10, 25, 0, 0)), '2026-11-25')).toBe(1);
-    expect(utcPuzzleNumber(new Date(Date.UTC(2026, 10, 26, 23, 59)), '2026-11-25')).toBe(2);
+  it('numbers REHARM puzzles by local calendar day (puzzleNumberForDate)', () => {
+    expect(localPuzzleNumber(new Date(2026, 10, 25, 0, 0), '2026-11-25')).toBe(1);
+    expect(localPuzzleNumber(new Date(2026, 10, 26, 23, 59), '2026-11-25')).toBe(2);
+    expect(localPuzzleNumber(new Date(2026, 0, 1, 12), '2026-11-25')).toBe(1);
+  });
+
+  it('rolls the REHARM puzzle over at local midnight', () => {
+    const before = new Date(2026, 10, 26, 23, 59, 59, 999);
+    const after = new Date(before.getTime() + 1);
+    expect(localPuzzleNumber(before, '2026-11-25')).toBe(2);
+    expect(localPuzzleNumber(after, '2026-11-25')).toBe(3);
+  });
+
+  it('counts a DST-change day as exactly one day', () => {
+    // US spring-forward (2027-03-14, 23h) and fall-back (2027-11-07, 25h); EU dates follow two weeks later.
+    for (const [m, d] of [[2, 14], [10, 7], [2, 28], [9, 31]] as const) {
+      const start = localPuzzleNumber(new Date(2027, m, d, 0, 30), '2026-11-25');
+      expect(localPuzzleNumber(new Date(2027, m, d, 23, 30), '2026-11-25')).toBe(start);
+      expect(localPuzzleNumber(new Date(2027, m, d + 1, 0, 30), '2026-11-25')).toBe(start + 1);
+      expect(localPuzzleNumber(new Date(2027, m, d - 1, 23, 30), '2026-11-25')).toBe(start - 1);
+    }
   });
 
   it('counts down to local midnight', () => {
